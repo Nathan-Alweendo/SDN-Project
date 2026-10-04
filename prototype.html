@@ -2,138 +2,1262 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <!-- Makes STEMMate responsive on phones, tablets and desktops -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STEMMate Namibia - Technical Prototype MVP</title>
-    <style>
-        :root {
-            --primary: #005a9c;
-            --warning: #d9381e;
-            --success: #1b7a43;
-            --bg: #f4f6f8;
-            --text: #1a1a1a;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-            padding: 20px;
-            margin: 0;
-        }
-        main { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 4px; margin-bottom: 15px; }
-        .badge-offline { background: #e0e0e0; color: #424242; border: 2px solid #757575; }
-        .badge-success { background: #d4edda; color: var(--success); border: 2px solid var(--success); }
-        .badge-error { background: #f8d7da; color: var(--warning); border: 2px solid var(--warning); }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 6px; }
-        input[type="text"], input[type="date"], textarea { width: 100%; padding: 10px; border: 2px solid #767676; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        .counter-group { display: flex; align-items: center; gap: 15px; }
-        .counter-btn { width: 44px; height: 44px; font-size: 20px; font-weight: bold; cursor: pointer; border: 2px solid var(--primary); background: white; color: var(--primary); border-radius: 4px; }
-        .counter-btn:focus, input:focus, textarea:focus { outline: 3px solid #ffbf47; outline-offset: 2px; }
-        .counter-val { font-size: 20px; font-weight: bold; width: 40px; text-align: center; }
-        .btn-submit { background-color: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; }
-        .btn-submit:hover { background-color: #004070; }
-        .alert-box { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; padding: 15px; border-radius: 4px; margin-top: 20px; }
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
-    </style>
+
+    <meta
+        name="description"
+        content="STEMMate Namibia - An offline-first STEM activity and lesson planning tool."
+    >
+
+    <title>STEMMate Namibia</title>
+
+    <!-- Main application stylesheet -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
-<main role="main">
-    <h1>STEMMate Namibia Plan Builder</h1>
-    
-    <!-- SYSTEM STATUS INDICATOR (QR-03 Non-colour cues / Accessible states) -->
-    <div id="statusIndicator" class="badge badge-offline" role="status" aria-live="polite">
-        ⬘ Status: Saved Locally (Device Offline)
-    </div>
+    <!-- =========================================================
+         ACCESSIBILITY: SKIP LINK
+         Allows keyboard users to skip directly to the main content.
+    ========================================================== -->
 
-    <!-- WORKFLOW 1: PLAN CREATION (FR-03) -->
-    <form id="plannerForm" onsubmit="handleSave(event)">
-        <div class="form-group">
-            <label for="planDate">Intended Kit Date:</label>
-            <input type="date" id="planDate" required value="2026-10-04">
-        </div>
+    <a href="#main-content" class="skip-link">
+        Skip to main content
+    </a>
 
-        <div class="form-group">
-            <label for="safetyNotes">Safety Notes & Inclusion Prompts:</label>
-            <textarea id="safetyNotes" rows="3" required placeholder="E.g., Ensure clear pathways for mobility devices. Secure loose battery elements.">Ensure clear pathways for mobility devices.</textarea>
-        </div>
 
-        <!-- WORKFLOW 2: PRIVACY-SAFE DEMOGRAPHICS (FR-06) -->
-        <fieldset class="form-group">
-            <legend style="font-weight: bold; margin-bottom: 10px;">Session Participation Headcounts (No PII)</legend>
-            <div class="counter-group">
-                <label id="lblGirls" for="valGirls">Girls Count:</label>
-                <button type="button" class="counter-btn" onclick="adjustCount('Girls', -1)" aria-label="Decrease girls count">-</button>
-                <input type="text" id="valGirls" class="counter-val" value="0" readonly aria-labelledby="lblGirls">
-                <button type="button" class="counter-btn" onclick="adjustCount('Girls', 1)" aria-label="Increase girls count">+</button>
+    <!-- =========================================================
+         APPLICATION SHELL
+    ========================================================== -->
+
+    <div class="app-shell">
+
+        <!-- =====================================================
+             TOP BAR
+        ====================================================== -->
+
+        <header class="topbar">
+
+            <div class="brand">
+
+                <div class="brand-mark">
+                    S
+                </div>
+
+                <div>
+                    <strong>STEMMate</strong>
+                    <span>Namibia</span>
+                </div>
+
             </div>
-        </fieldset>
 
-        <button type="submit" class="btn-submit">Atomically Save Plan Session</button>
-    </form>
 
-    <!-- WORKFLOW 3: FAILURE / CONFLICT SIMULATION TRIGGER (FR-05, QR-05) -->
-    <div id="simulationConsole" style="margin-top: 30px; border-top: 2px dashed #ccc; padding-top: 20px;">
-        <h2>Simulate Connectivity & Sync Pipeline</h2>
-        <p style="font-size: 14px; color: #555;">Trigger background network synchronization simulation routines:</p>
-        <div style="display: flex; gap: 10px;">
-            <button type="button" onclick="simulateSync('clean')" style="background:#28a745; color:white; border:none; padding:10px; cursor:pointer; flex:1; border-radius:4px; font-weight:bold;">Simulate Successful Sync</button>
-            <button type="button" onclick="simulateSync('conflict')" style="background:#dc3545; color:white; border:none; padding:10px; cursor:pointer; flex:1; border-radius:4px; font-weight:bold;">Simulate Kit Lock Conflict</button>
-        </div>
-        
-        <div id="syncFeedback" class="alert-box" style="display: none;" role="alert"></div>
+            <!-- Connection status -->
+            <div
+                id="connection-status"
+                class="connection-status online"
+                aria-live="polite"
+            >
+                <span class="status-dot"></span>
+                <span id="connection-label">Online</span>
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             MAIN NAVIGATION
+        ====================================================== -->
+
+        <nav
+            class="main-nav"
+            aria-label="Main navigation"
+        >
+
+            <button
+                class="nav-btn active"
+                data-screen="home"
+            >
+                <span>⌂</span>
+                Home
+            </button>
+
+            <button
+                class="nav-btn"
+                data-screen="activities"
+            >
+                <span>▦</span>
+                Activities
+            </button>
+
+            <button
+                class="nav-btn"
+                data-screen="my-activities"
+            >
+                <span>✦</span>
+                My Activities
+            </button>
+
+            <button
+                class="nav-btn"
+                data-screen="saved"
+            >
+                <span>♡</span>
+                Saved
+            </button>
+
+            <button
+                class="nav-btn"
+                data-screen="planner"
+            >
+                <span>☷</span>
+                Planner
+            </button>
+
+        </nav>
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+
+        <main id="main-content" class="main-content">
+
+
+            <!-- =================================================
+                 HOME SCREEN
+            ================================================== -->
+
+            <section
+                class="screen"
+                id="screen-home"
+                data-screen-panel="home"
+            >
+
+                <div class="hero">
+
+                    <div class="hero-content">
+
+                        <span class="eyebrow">
+                            OFFLINE-FIRST STEM LEARNING
+                        </span>
+
+                        <h1>
+                            Plan better.<br>
+                            Teach anywhere.
+                        </h1>
+
+                        <p>
+                            Discover STEM activities, create your own resources,
+                            and prepare lesson plans even when connectivity is limited.
+                        </p>
+
+                        <div class="hero-actions">
+
+                            <button
+                                class="btn btn-primary"
+                                data-screen="activities"
+                            >
+                                Explore activities
+                            </button>
+
+                            <button
+                                class="btn btn-secondary"
+                                data-screen="create-activity"
+                            >
+                                + Create activity
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-visual">
+
+                        <div class="hero-orbit orbit-one"></div>
+                        <div class="hero-orbit orbit-two"></div>
+
+                        <div class="hero-core">
+                            <span>STEM</span>
+                            <strong>+</strong>
+                            <span>IDEAS</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Quick access -->
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="eyebrow">
+                            QUICK ACCESS
+                        </span>
+
+                        <h2>
+                            Your workspace
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-grid">
+
+                    <button
+                        class="quick-card"
+                        data-screen="activities"
+                    >
+
+                        <span class="quick-icon blue">
+                            ▦
+                        </span>
+
+                        <strong>
+                            Explore activities
+                        </strong>
+
+                        <span>
+                            Browse ready-to-use STEM resources.
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="quick-card"
+                        data-screen="my-activities"
+                    >
+
+                        <span class="quick-icon purple">
+                            ✦
+                        </span>
+
+                        <strong>
+                            My activities
+                        </strong>
+
+                        <span>
+                            Access activities you created yourself.
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        class="quick-card"
+                        data-screen="planner"
+                    >
+
+                        <span class="quick-icon green">
+                            ☷
+                        </span>
+
+                        <strong>
+                            Session planner
+                        </strong>
+
+                        <span>
+                            Turn activities into lesson plans.
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+                <!-- Featured activities -->
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="eyebrow">
+                            STARTER RESOURCES
+                        </span>
+
+                        <h2>
+                            Featured activities
+                        </h2>
+                    </div>
+
+                    <button
+                        class="text-btn"
+                        data-screen="activities"
+                    >
+                        View all →
+                    </button>
+
+                </div>
+
+                <div
+                    id="featured-activities"
+                    class="activity-grid"
+                ></div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ACTIVITIES SCREEN
+            ================================================== -->
+
+            <section
+                class="screen"
+                id="screen-activities"
+                data-screen-panel="activities"
+                hidden
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            STEM LIBRARY
+                        </span>
+
+                        <h1>
+                            Activities
+                        </h1>
+
+                        <p>
+                            Find ready-to-use activities for your classroom.
+                        </p>
+
+                    </div>
+
+                    <!-- CREATE ACTIVITY BUTTON -->
+
+                    <button
+                        id="create-activity-from-library"
+                        class="btn btn-primary"
+                    >
+                        + Create activity
+                    </button>
+
+                </div>
+
+
+                <!-- Search and filters -->
+
+                <div class="filter-panel">
+
+                    <div class="search-box">
+
+                        <label for="activity-search">
+                            Search activities
+                        </label>
+
+                        <input
+                            id="activity-search"
+                            type="search"
+                            placeholder="Search by activity, topic or keyword..."
+                        >
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="subject-filter">
+                            Subject
+                        </label>
+
+                        <select id="subject-filter">
+
+                            <option value="all">
+                                All subjects
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="grade-filter">
+                            Grade
+                        </label>
+
+                        <select id="grade-filter">
+
+                            <option value="all">
+                                All grades
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="activity-results"
+                    class="activity-grid"
+                ></div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 MY ACTIVITIES SCREEN
+            ================================================== -->
+
+            <section
+                class="screen"
+                id="screen-my-activities"
+                data-screen-panel="my-activities"
+                hidden
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            YOUR RESOURCES
+                        </span>
+
+                        <h1>
+                            My Activities
+                        </h1>
+
+                        <p>
+                            Activities you have created and saved on this device.
+                        </p>
+
+                    </div>
+
+                    <button
+                        id="create-activity-from-my-library"
+                        class="btn btn-primary"
+                    >
+                        + Create activity
+                    </button>
+
+                </div>
+
+
+                <!-- User-created activities appear here -->
+
+                <div
+                    id="my-activities-list"
+                    class="activity-grid"
+                ></div>
+
+
+                <!-- Empty state -->
+
+                <div
+                    id="my-activities-empty"
+                    class="empty-state"
+                    hidden
+                >
+
+                    <div class="empty-icon">
+                        ✦
+                    </div>
+
+                    <h2>
+                        No activities yet
+                    </h2>
+
+                    <p>
+                        Create your first STEM activity and it will appear here.
+                    </p>
+
+                    <button
+                        id="create-first-activity"
+                        class="btn btn-primary"
+                    >
+                        Create my first activity
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CREATE ACTIVITY SCREEN
+            ================================================== -->
+
+            <section
+                class="screen"
+                id="screen-create-activity"
+                data-screen-panel="create-activity"
+                hidden
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            CREATE RESOURCE
+                        </span>
+
+                        <h1>
+                            Create an activity
+                        </h1>
+
+                        <p>
+                            Build your own STEM activity and save it for later use.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    id="create-activity-form"
+                    class="form-card"
+                >
+
+                    <!-- BASIC INFORMATION -->
+
+                    <div class="form-section">
+
+                        <div class="form-section-heading">
+
+                            <span class="form-section-number">
+                                01
+                            </span>
+
+                            <div>
+                                <h2>Basic information</h2>
+
+                                <p>
+                                    Give your activity a clear identity.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-field form-field-wide">
+
+                                <label for="custom-title">
+                                    Activity title *
+                                </label>
+
+                                <input
+                                    id="custom-title"
+                                    name="title"
+                                    type="text"
+                                    placeholder="e.g. Build a Simple Water Filter"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="custom-subject">
+                                    Subject *
+                                </label>
+
+                                <select
+                                    id="custom-subject"
+                                    name="subject"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Select subject
+                                    </option>
+
+                                    <option value="Physics">
+                                        Physics
+                                    </option>
+
+                                    <option value="Biology">
+                                        Biology
+                                    </option>
+
+                                    <option value="Chemistry">
+                                        Chemistry
+                                    </option>
+
+                                    <option value="Mathematics">
+                                        Mathematics
+                                    </option>
+
+                                    <option value="Computer Science">
+                                        Computer Science
+                                    </option>
+
+                                    <option value="General STEM">
+                                        General STEM
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="custom-grade">
+                                    Grade *
+                                </label>
+
+                                <select
+                                    id="custom-grade"
+                                    name="grade"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Select grade
+                                    </option>
+
+                                    <option value="Grade 7">Grade 7</option>
+                                    <option value="Grade 8">Grade 8</option>
+                                    <option value="Grade 9">Grade 9</option>
+                                    <option value="Grade 10">Grade 10</option>
+                                    <option value="Grade 11">Grade 11</option>
+                                    <option value="Grade 12">Grade 12</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="custom-duration">
+                                    Duration *
+                                </label>
+
+                                <input
+                                    id="custom-duration"
+                                    name="duration"
+                                    type="text"
+                                    placeholder="e.g. 45 minutes"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="custom-learners">
+                                    Number of learners
+                                </label>
+
+                                <input
+                                    id="custom-learners"
+                                    name="learners"
+                                    type="number"
+                                    min="1"
+                                    placeholder="e.g. 30"
+                                >
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="custom-icon">
+                                    Activity type
+                                </label>
+
+                                <select
+                                    id="custom-icon"
+                                    name="icon"
+                                >
+
+                                    <option value="🧪">
+                                        🧪 Experiment
+                                    </option>
+
+                                    <option value="⚡">
+                                        ⚡ Physics
+                                    </option>
+
+                                    <option value="🌱">
+                                        🌱 Biology
+                                    </option>
+
+                                    <option value="🔬">
+                                        🔬 Science
+                                    </option>
+
+                                    <option value="💻">
+                                        💻 Computing
+                                    </option>
+
+                                    <option value="📐">
+                                        📐 Mathematics
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LEARNING CONTENT -->
+
+                    <div class="form-section">
+
+                        <div class="form-section-heading">
+
+                            <span class="form-section-number">
+                                02
+                            </span>
+
+                            <div>
+                                <h2>Learning content</h2>
+
+                                <p>
+                                    Explain what learners will do and learn.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="custom-description">
+                                Activity instructions *
+                            </label>
+
+                            <textarea
+                                id="custom-description"
+                                name="description"
+                                rows="5"
+                                placeholder="Describe what learners should do..."
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="custom-objective">
+                                Learning objective *
+                            </label>
+
+                            <textarea
+                                id="custom-objective"
+                                name="objective"
+                                rows="4"
+                                placeholder="What should learners understand or be able to do?"
+                                required
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CLASSROOM INFORMATION -->
+
+                    <div class="form-section">
+
+                        <div class="form-section-heading">
+
+                            <span class="form-section-number">
+                                03
+                            </span>
+
+                            <div>
+                                <h2>Classroom information</h2>
+
+                                <p>
+                                    Help the teacher prepare safely and inclusively.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="custom-materials">
+                                Materials required
+                            </label>
+
+                            <textarea
+                                id="custom-materials"
+                                name="materials"
+                                rows="4"
+                                placeholder="List the materials learners will need..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="custom-safety">
+                                Safety considerations
+                            </label>
+
+                            <textarea
+                                id="custom-safety"
+                                name="safety"
+                                rows="4"
+                                placeholder="List relevant safety precautions..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-field">
+
+                            <label for="custom-accessibility">
+                                Accessibility and inclusion notes
+                            </label>
+
+                            <textarea
+                                id="custom-accessibility"
+                                name="accessibility"
+                                rows="4"
+                                placeholder="How can this activity accommodate different learners?"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FORM ACTIONS -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            id="cancel-create-activity"
+                            class="btn btn-secondary"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Save activity
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ACTIVITY DETAIL SCREEN
+            ================================================== -->
+
+            <section
+                class="screen"
+                id="screen-activity-detail"
+                data-screen-panel="activity-detail"
+                hidden
+            >
+
+                <div id="activity-detail"></div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SAVED ACTIVITIES SCREEN
+            ================================================== -->
+
+            <section
+                class="screen"
+                id="screen-saved"
+                data-screen-panel="saved"
+                hidden
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            OFFLINE READY
+                        </span>
+
+                        <h1>
+                            Saved activities
+                        </h1>
+
+                        <p>
+                            Activities available for quick access on this device.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="saved-activities"
+                    class="activity-grid"
+                ></div>
+
+
+                <div
+                    id="saved-empty"
+                    class="empty-state"
+                    hidden
+                >
+
+                    <div class="empty-icon">
+                        ♡
+                    </div>
+
+                    <h2>
+                        Nothing saved yet
+                    </h2>
+
+                    <p>
+                        Save activities from the library to access them quickly.
+                    </p>
+
+                    <button
+                        class="btn btn-primary"
+                        data-screen="activities"
+                    >
+                        Explore activities
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PLANNER SCREEN
+            ================================================== -->
+
+            <section
+                class="screen"
+                id="screen-planner"
+                data-screen-panel="planner"
+                hidden
+            >
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            SESSION PLANNING
+                        </span>
+
+                        <h1>
+                            Planner
+                        </h1>
+
+                        <p>
+                            Prepare and save a classroom session.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="planner-layout">
+
+
+                    <!-- PLANNER FORM -->
+
+                    <form
+                        id="planner-form"
+                        class="form-card"
+                    >
+
+                        <div class="form-section">
+
+                            <div class="form-section-heading">
+
+                                <span class="form-section-number">
+                                    01
+                                </span>
+
+                                <div>
+                                    <h2>Session details</h2>
+
+                                    <p>
+                                        Build your lesson plan.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="planner-activity">
+                                    Activity
+                                </label>
+
+                                <select id="planner-activity">
+                                    <option value="">
+                                        Select an activity
+                                    </option>
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-grid">
+
+                                <div class="form-field">
+
+                                    <label for="planner-date">
+                                        Session date
+                                    </label>
+
+                                    <input
+                                        id="planner-date"
+                                        type="date"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-field">
+
+                                    <label for="planner-learners">
+                                        Number of learners
+                                    </label>
+
+                                    <input
+                                        id="planner-learners"
+                                        type="number"
+                                        min="1"
+                                        placeholder="e.g. 30"
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-field">
+
+                                <label for="planner-notes">
+                                    Safety and inclusion notes
+                                </label>
+
+                                <textarea
+                                    id="planner-notes"
+                                    rows="5"
+                                    placeholder="Add notes for this session..."
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-actions">
+
+                            <button
+                                type="button"
+                                id="save-draft"
+                                class="btn btn-secondary"
+                            >
+                                Save draft
+                            </button>
+
+                            <button
+                                type="button"
+                                id="save-and-sync"
+                                class="btn btn-primary"
+                            >
+                                Save & prepare sync
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+
+                    <!-- PLANNER STATUS -->
+
+                    <aside class="status-card">
+
+                        <div class="status-card-heading">
+
+                            <span class="eyebrow">
+                                SYNC STATUS
+                            </span>
+
+                            <span
+                                id="planner-status-badge"
+                                class="status-badge"
+                            >
+                                No plan
+                            </span>
+
+                        </div>
+
+
+                        <div class="sync-steps">
+
+                            <div
+                                id="sync-step-local"
+                                class="sync-step"
+                            >
+
+                                <span class="sync-step-icon">
+                                    ✓
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        Saved locally
+                                    </strong>
+
+                                    <span>
+                                        Your work is stored on this device.
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                id="sync-step-waiting"
+                                class="sync-step"
+                            >
+
+                                <span class="sync-step-icon">
+                                    ↗
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        Waiting for connection
+                                    </strong>
+
+                                    <span>
+                                        The plan can sync when connectivity returns.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                id="sync-step-synced"
+                                class="sync-step"
+                            >
+
+                                <span class="sync-step-icon">
+                                    ✓
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        Synchronized
+                                    </strong>
+
+                                    <span>
+                                        Your latest plan has been synchronized.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- OFFLINE DEMO CONTROLS -->
+
+                        <div class="demo-controls">
+
+                            <span class="demo-label">
+                                Prototype testing
+                            </span>
+
+                            <button
+                                id="toggle-connection"
+                                class="btn btn-secondary btn-small"
+                            >
+                                Simulate offline mode
+                            </button>
+
+                            <button
+                                id="sync-plan"
+                                class="btn btn-primary btn-small"
+                            >
+                                Sync plan
+                            </button>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- =====================================================
+             TOAST / FEEDBACK
+        ====================================================== -->
+
+        <div
+            id="toast"
+            class="toast"
+            role="status"
+            aria-live="polite"
+            hidden
+        ></div>
+
     </div>
-</main>
 
-<script>
-    // Local In-Memory & Storage Atomic Mock Representation (QR-01 / SR-01 payload tracking)
-    function adjustCount(field, delta) {
-        const input = document.getElementById(`valGirls`);
-        let current = parseInt(input.value, 10);
-        current = Math.max(0, current + delta);
-        input.value = current;
-    }
 
-    // Workflow 1 & QR-01: Proving Local Atomicity via Storage API
-    function handleSave(e) {
-        e.preventDefault();
-        const dataPayload = {
-            date: document.getElementById('planDate').value,
-            safety: document.getElementById('safetyNotes').value,
-            girlsCount: document.getElementById('valGirls').value,
-            syncStatus: "pending"
-        };
-        
-        // Enforce atomic overwrite transaction footprint
-        localStorage.setItem('stemmate_active_plan', JSON.stringify(dataPayload));
-        
-        alert("Transaction Succeeded: Data securely committed to device isolated local storage. Total payload size: ~0.12 KB (Passes SR-01 target constraint).");
-    }
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
 
-    // Workflow 3 & FR-05: Simulation pipeline engine transitions
-    function simulateSync(scenario) {
-        const feedback = document.getElementById('syncFeedback');
-        const status = document.getElementById('statusIndicator');
-        feedback.style.display = "block";
+    <script src="js/storage.js"></script>
+    <script src="js/activities.js"></script>
+    <script src="js/planner.js"></script>
+    <script src="js/app.js"></script>
 
-        if (scenario === 'clean') {
-            status.className = "badge badge-success";
-            status.innerHTML = "⬤ Status: Synced Successfully ✓";
-            feedback.innerHTML = "<strong>Sync Operation Complete:</strong> Cryptographic handshake verified device authorization credentials. Data processed cleanly via safe idempotent architecture endpoint.";
-            feedback.style.borderColor = "var(--success)";
-            feedback.style.color = "var(--success)";
-            feedback.style.background = "#d4edda";
-        } else if (scenario === 'conflict') {
-            status.className = "badge badge-error";
-            status.innerHTML = "▲ Status: Collision Conflict Detected";
-            feedback.innerHTML = "<strong>CRITICAL COLLISION ERROR [FR-05]:</strong> Shared distribution allocation failure. Shared Equipment Kit A is already reserved by operator profile 'Facilitator John' on 04 Oct. Please adjust your deployment timeline.";
-            feedback.style.borderColor = "var(--warning)";
-            feedback.style.color = "var(--warning)";
-            feedback.style.background = "#f8d7da";
-        }
-    }
-</script>
 </body>
 </html>
