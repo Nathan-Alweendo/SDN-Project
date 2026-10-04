@@ -3,137 +3,1722 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STEMMate Namibia - Technical Prototype MVP</title>
+
+    <title>STEMMate Namibia</title>
+
     <style>
         :root {
             --primary: #005a9c;
-            --warning: #d9381e;
+            --primary-dark: #003f6f;
             --success: #1b7a43;
+            --warning: #8a5a00;
+            --danger: #b42318;
+
             --bg: #f4f6f8;
+            --surface: #ffffff;
+            --surface-alt: #eef3f7;
+
             --text: #1a1a1a;
+            --muted: #555555;
+            --border: #767676;
+
+            --focus: #ffbf47;
+
+            --radius: 8px;
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-            padding: 20px;
             margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
         }
-        main { max-width: 650px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .badge { display: inline-block; padding: 6px 12px; font-weight: bold; border-radius: 4px; margin-bottom: 15px; }
-        .badge-offline { background: #e0e0e0; color: #424242; border: 2px solid #757575; }
-        .badge-success { background: #d4edda; color: var(--success); border: 2px solid var(--success); }
-        .badge-error { background: #f8d7da; color: var(--warning); border: 2px solid var(--warning); }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 6px; }
-        input[type="text"], input[type="date"], textarea { width: 100%; padding: 10px; border: 2px solid #767676; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        .counter-group { display: flex; align-items: center; gap: 15px; }
-        .counter-btn { width: 44px; height: 44px; font-size: 20px; font-weight: bold; cursor: pointer; border: 2px solid var(--primary); background: white; color: var(--primary); border-radius: 4px; }
-        .counter-btn:focus, input:focus, textarea:focus { outline: 3px solid #ffbf47; outline-offset: 2px; }
-        .counter-val { font-size: 20px; font-weight: bold; width: 40px; text-align: center; }
-        .btn-submit { background-color: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; }
-        .btn-submit:hover { background-color: #004070; }
-        .alert-box { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; padding: 15px; border-radius: 4px; margin-top: 20px; }
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid var(--focus);
+            outline-offset: 3px;
+        }
+
+        .app-shell {
+            width: min(100%, 760px);
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--surface);
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .app-header {
+            padding: 24px 20px 18px;
+            border-bottom: 1px solid #d6dce1;
+        }
+
+        .app-kicker {
+            margin: 0 0 4px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .app-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .app-subtitle {
+            margin: 6px 0 16px;
+            color: var(--muted);
+        }
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border: 2px solid;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .status-badge.offline {
+            color: #424242;
+            background: #eeeeee;
+            border-color: #757575;
+        }
+
+        .status-badge.pending {
+            color: var(--warning);
+            background: #fff4d6;
+            border-color: #b7791f;
+        }
+
+        .status-badge.synced {
+            color: var(--success);
+            background: #e1f4e8;
+            border-color: var(--success);
+        }
+
+        .status-badge.error {
+            color: var(--danger);
+            background: #fde8e7;
+            border-color: var(--danger);
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================= */
+
+        .app-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            padding: 8px;
+            background: var(--surface-alt);
+            border-bottom: 1px solid #d6dce1;
+        }
+
+        .nav-btn {
+            min-height: 48px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text);
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            background: #ffffff;
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* =========================
+           SCREENS
+        ========================= */
+
+        .screen {
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .section-heading {
+            margin-bottom: 20px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 1.45rem;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+        .section-label {
+            margin: 0 0 4px;
+            color: var(--primary);
+            font-size: 0.78rem;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+        }
+
+        /* =========================
+           FORMS
+        ========================= */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label,
+        legend {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input[type="search"],
+        input[type="date"],
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            color: var(--text);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .btn {
+            min-height: 44px;
+            padding: 10px 16px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-danger {
+            background: white;
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* =========================
+           ACTIVITY CARDS
+        ========================= */
+
+        .activity-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .activity-card {
+            padding: 16px;
+            border: 2px solid #d1d7dc;
+            border-radius: var(--radius);
+            background: white;
+        }
+
+        .activity-card:hover {
+            border-color: var(--primary);
+        }
+
+        .activity-card h3 {
+            margin: 0 0 6px;
+        }
+
+        .activity-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border: 1px solid #777;
+            border-radius: 4px;
+            background: #f5f5f5;
+            font-size: 0.82rem;
+        }
+
+        .activity-description {
+            margin: 8px 0 14px;
+            color: var(--muted);
+        }
+
+        /* =========================
+           DETAILS
+        ========================= */
+
+        .detail-panel {
+            padding: 18px;
+            border: 2px solid #d1d7dc;
+            border-radius: var(--radius);
+            background: white;
+        }
+
+        .detail-panel h2 {
+            margin-top: 0;
+        }
+
+        .detail-list {
+            padding-left: 20px;
+        }
+
+        /* =========================
+           PLAN
+        ========================= */
+
+        .plan-card {
+            padding: 18px;
+            border: 2px solid #d1d7dc;
+            border-radius: var(--radius);
+            background: white;
+        }
+
+        .plan-status {
+            margin-bottom: 16px;
+        }
+
+        .plan-status strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* =========================
+           ALERTS
+        ========================= */
+
+        .alert {
+            margin: 16px 0;
+            padding: 14px;
+            border: 2px solid;
+            border-radius: 6px;
+        }
+
+        .alert-info {
+            color: #174b70;
+            background: #e8f3fb;
+            border-color: #6da8d0;
+        }
+
+        .alert-warning {
+            color: #6b4700;
+            background: #fff4d6;
+            border-color: #b7791f;
+        }
+
+        .alert-success {
+            color: var(--success);
+            background: #e1f4e8;
+            border-color: var(--success);
+        }
+
+        .alert-error {
+            color: var(--danger);
+            background: #fde8e7;
+            border-color: var(--danger);
+        }
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            padding: 24px;
+            text-align: center;
+            border: 2px dashed #999;
+            border-radius: var(--radius);
+            color: var(--muted);
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .app-footer {
+            padding: 20px;
+            border-top: 1px solid #d6dce1;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 520px) {
+            .screen {
+                padding: 16px;
+            }
+
+            .app-header {
+                padding: 20px 16px 16px;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .button-row .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<main role="main">
-    <h1>STEMMate Namibia Plan Builder</h1>
-    
-    <!-- SYSTEM STATUS INDICATOR (QR-03 Non-colour cues / Accessible states) -->
-    <div id="statusIndicator" class="badge badge-offline" role="status" aria-live="polite">
-        ⬘ Status: Saved Locally (Device Offline)
-    </div>
+<main class="app-shell">
 
-    <!-- WORKFLOW 1: PLAN CREATION (FR-03) -->
-    <form id="plannerForm" onsubmit="handleSave(event)">
-        <div class="form-group">
-            <label for="planDate">Intended Kit Date:</label>
-            <input type="date" id="planDate" required value="2026-10-04">
+    <!-- =========================
+         APPLICATION HEADER
+    ========================== -->
+
+    <header class="app-header">
+
+        <p class="app-kicker">STEMMate Namibia</p>
+
+        <h1>STEM Activity Hub</h1>
+
+        <p class="app-subtitle">
+            Plan and prepare STEM learning sessions, even when connectivity is limited.
+        </p>
+
+        <div
+            id="statusIndicator"
+            class="status-badge offline"
+            role="status"
+            aria-live="polite"
+        >
+            <span aria-hidden="true">●</span>
+            <span id="statusText">Offline — saved locally</span>
         </div>
 
-        <div class="form-group">
-            <label for="safetyNotes">Safety Notes & Inclusion Prompts:</label>
-            <textarea id="safetyNotes" rows="3" required placeholder="E.g., Ensure clear pathways for mobility devices. Secure loose battery elements.">Ensure clear pathways for mobility devices.</textarea>
+    </header>
+
+
+    <!-- =========================
+         MAIN NAVIGATION
+    ========================== -->
+
+    <nav class="app-nav" aria-label="Main navigation">
+
+        <button
+            type="button"
+            class="nav-btn active"
+            data-screen="activities"
+            onclick="showScreen('activities')"
+        >
+            Activities
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            data-screen="saved"
+            onclick="showScreen('saved')"
+        >
+            Saved
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            data-screen="plans"
+            onclick="showScreen('plans')"
+        >
+            Session Plans
+        </button>
+
+    </nav>
+
+
+    <!-- =========================
+         ACTIVITY DISCOVERY
+    ========================== -->
+
+    <section
+        id="activitiesScreen"
+        class="screen"
+        aria-labelledby="activitiesHeading"
+    >
+
+        <div class="section-heading">
+
+            <p class="section-label">DISCOVER</p>
+
+            <h2 id="activitiesHeading">
+                STEM Activities
+            </h2>
+
+            <p>
+                Find suitable activities and save them for offline preparation.
+            </p>
+
         </div>
 
-        <!-- WORKFLOW 2: PRIVACY-SAFE DEMOGRAPHICS (FR-06) -->
-        <fieldset class="form-group">
-            <legend style="font-weight: bold; margin-bottom: 10px;">Session Participation Headcounts (No PII)</legend>
-            <div class="counter-group">
-                <label id="lblGirls" for="valGirls">Girls Count:</label>
-                <button type="button" class="counter-btn" onclick="adjustCount('Girls', -1)" aria-label="Decrease girls count">-</button>
-                <input type="text" id="valGirls" class="counter-val" value="0" readonly aria-labelledby="lblGirls">
-                <button type="button" class="counter-btn" onclick="adjustCount('Girls', 1)" aria-label="Increase girls count">+</button>
+
+        <div class="form-group">
+
+            <label for="activitySearch">
+                Search activities
+            </label>
+
+            <input
+                type="search"
+                id="activitySearch"
+                placeholder="Search by activity, subject or topic"
+                oninput="filterActivities()"
+            >
+
+        </div>
+
+
+        <div class="filter-row">
+
+            <div class="form-group">
+
+                <label for="subjectFilter">
+                    Subject
+                </label>
+
+                <select
+                    id="subjectFilter"
+                    onchange="filterActivities()"
+                >
+                    <option value="all">All subjects</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Chemistry">Chemistry</option>
+                </select>
+
             </div>
-        </fieldset>
 
-        <button type="submit" class="btn-submit">Atomically Save Plan Session</button>
-    </form>
 
-    <!-- WORKFLOW 3: FAILURE / CONFLICT SIMULATION TRIGGER (FR-05, QR-05) -->
-    <div id="simulationConsole" style="margin-top: 30px; border-top: 2px dashed #ccc; padding-top: 20px;">
-        <h2>Simulate Connectivity & Sync Pipeline</h2>
-        <p style="font-size: 14px; color: #555;">Trigger background network synchronization simulation routines:</p>
-        <div style="display: flex; gap: 10px;">
-            <button type="button" onclick="simulateSync('clean')" style="background:#28a745; color:white; border:none; padding:10px; cursor:pointer; flex:1; border-radius:4px; font-weight:bold;">Simulate Successful Sync</button>
-            <button type="button" onclick="simulateSync('conflict')" style="background:#dc3545; color:white; border:none; padding:10px; cursor:pointer; flex:1; border-radius:4px; font-weight:bold;">Simulate Kit Lock Conflict</button>
+            <div class="form-group">
+
+                <label for="gradeFilter">
+                    Grade
+                </label>
+
+                <select
+                    id="gradeFilter"
+                    onchange="filterActivities()"
+                >
+                    <option value="all">All grades</option>
+                    <option value="7">Grade 7</option>
+                    <option value="8">Grade 8</option>
+                    <option value="9">Grade 9</option>
+                </select>
+
+            </div>
+
         </div>
-        
-        <div id="syncFeedback" class="alert-box" style="display: none;" role="alert"></div>
-    </div>
+
+
+        <div
+            id="activityList"
+            class="activity-list"
+            aria-live="polite"
+        ></div>
+
+    </section>
+
+
+    <!-- =========================
+         ACTIVITY DETAILS
+    ========================== -->
+
+    <section
+        id="detailsScreen"
+        class="screen hidden"
+        aria-labelledby="detailsHeading"
+    >
+
+        <div id="activityDetails"></div>
+
+    </section>
+
+
+    <!-- =========================
+         SAVED ACTIVITIES
+    ========================== -->
+
+    <section
+        id="savedScreen"
+        class="screen hidden"
+        aria-labelledby="savedHeading"
+    >
+
+        <div class="section-heading">
+
+            <p class="section-label">OFFLINE</p>
+
+            <h2 id="savedHeading">
+                Saved Activities
+            </h2>
+
+            <p>
+                These activities are stored on this device and remain available offline.
+            </p>
+
+        </div>
+
+        <div
+            id="savedActivityList"
+            class="activity-list"
+            aria-live="polite"
+        ></div>
+
+    </section>
+
+
+    <!-- =========================
+         SESSION PLANS
+    ========================== -->
+
+    <section
+        id="plansScreen"
+        class="screen hidden"
+        aria-labelledby="plansHeading"
+    >
+
+        <div class="section-heading">
+
+            <p class="section-label">PLAN</p>
+
+            <h2 id="plansHeading">
+                Session Plans
+            </h2>
+
+            <p>
+                Create, save and recover session plans from this device.
+            </p>
+
+        </div>
+
+        <div id="planWorkspace"></div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="app-footer">
+
+        <strong>STEMMate Namibia prototype</strong>
+
+        <p>
+            Demonstration prototype using synthetic data only.
+            No pupil personally identifiable information is collected.
+        </p>
+
+    </footer>
+
 </main>
 
+
 <script>
-    // Local In-Memory & Storage Atomic Mock Representation (QR-01 / SR-01 payload tracking)
-    function adjustCount(field, delta) {
-        const input = document.getElementById(`valGirls`);
-        let current = parseInt(input.value, 10);
-        current = Math.max(0, current + delta);
-        input.value = current;
-    }
 
-    // Workflow 1 & QR-01: Proving Local Atomicity via Storage API
-    function handleSave(e) {
-        e.preventDefault();
-        const dataPayload = {
-            date: document.getElementById('planDate').value,
-            safety: document.getElementById('safetyNotes').value,
-            girlsCount: document.getElementById('valGirls').value,
-            syncStatus: "pending"
-        };
-        
-        // Enforce atomic overwrite transaction footprint
-        localStorage.setItem('stemmate_active_plan', JSON.stringify(dataPayload));
-        
-        alert("Transaction Succeeded: Data securely committed to device isolated local storage. Total payload size: ~0.12 KB (Passes SR-01 target constraint).");
-    }
+    /* =========================================================
+       SYNTHETIC ACTIVITY DATA
+       ========================================================= */
 
-    // Workflow 3 & FR-05: Simulation pipeline engine transitions
-    function simulateSync(scenario) {
-        const feedback = document.getElementById('syncFeedback');
-        const status = document.getElementById('statusIndicator');
-        feedback.style.display = "block";
+    const activities = [
 
-        if (scenario === 'clean') {
-            status.className = "badge badge-success";
-            status.innerHTML = "⬤ Status: Synced Successfully ✓";
-            feedback.innerHTML = "<strong>Sync Operation Complete:</strong> Cryptographic handshake verified device authorization credentials. Data processed cleanly via safe idempotent architecture endpoint.";
-            feedback.style.borderColor = "var(--success)";
-            feedback.style.color = "var(--success)";
-            feedback.style.background = "#d4edda";
-        } else if (scenario === 'conflict') {
-            status.className = "badge badge-error";
-            status.innerHTML = "▲ Status: Collision Conflict Detected";
-            feedback.innerHTML = "<strong>CRITICAL COLLISION ERROR [FR-05]:</strong> Shared distribution allocation failure. Shared Equipment Kit A is already reserved by operator profile 'Facilitator John' on 04 Oct. Please adjust your deployment timeline.";
-            feedback.style.borderColor = "var(--warning)";
-            feedback.style.color = "var(--warning)";
-            feedback.style.background = "#f8d7da";
+        {
+            id: "PHY-001",
+            title: "Balloon Rocket",
+            subject: "Physics",
+            grade: "8",
+            duration: "45 minutes",
+            difficulty: "Beginner",
+
+            description:
+                "Explore forces and motion by building a simple balloon-powered rocket.",
+
+            materials: [
+                "Balloon",
+                "String",
+                "Drinking straw",
+                "Tape"
+            ],
+
+            safety:
+                "Keep the activity area clear and secure the string pathway before starting."
+        },
+
+        {
+            id: "PHY-002",
+            title: "Solar Oven Challenge",
+            subject: "Physics",
+            grade: "8",
+            duration: "60 minutes",
+            difficulty: "Intermediate",
+
+            description:
+                "Investigate heat transfer by designing a simple solar oven using locally available materials.",
+
+            materials: [
+                "Cardboard box",
+                "Aluminium foil",
+                "Clear plastic",
+                "Paper"
+            ],
+
+            safety:
+                "Do not look directly at concentrated sunlight. Supervise all heating activities."
+        },
+
+        {
+            id: "BIO-001",
+            title: "Plant Water Transport",
+            subject: "Biology",
+            grade: "7",
+            duration: "40 minutes",
+            difficulty: "Beginner",
+
+            description:
+                "Observe how water moves through plant structures using a simple colour-change experiment.",
+
+            materials: [
+                "Celery stalks",
+                "Clear container",
+                "Water",
+                "Food colouring"
+            ],
+
+            safety:
+                "Do not consume experimental materials. Wash hands after the activity."
+        },
+
+        {
+            id: "BIO-002",
+            title: "Local Ecosystem Survey",
+            subject: "Biology",
+            grade: "9",
+            duration: "50 minutes",
+            difficulty: "Intermediate",
+
+            description:
+                "Identify organisms in the surrounding environment and discuss relationships within an ecosystem.",
+
+            materials: [
+                "Observation sheets",
+                "Pencils",
+                "Optional magnifying glass"
+            ],
+
+            safety:
+                "Avoid touching unknown plants or animals and remain within the designated activity area."
+        },
+
+        {
+            id: "CHE-001",
+            title: "Safe Acids and Bases",
+            subject: "Chemistry",
+            grade: "9",
+            duration: "45 minutes",
+            difficulty: "Intermediate",
+
+            description:
+                "Compare common household substances using a simple indicator experiment.",
+
+            materials: [
+                "Red cabbage indicator",
+                "Small containers",
+                "Water",
+                "Household samples"
+            ],
+
+            safety:
+                "Use only approved household samples and never taste experimental substances."
         }
+
+    ];
+
+
+    /* =========================================================
+       APPLICATION STATE
+       ========================================================= */
+
+    let currentActivityId = null;
+
+    let savedActivities =
+        JSON.parse(
+            localStorage.getItem("stemmate_saved_activities") || "[]"
+        );
+
+    let currentPlan =
+        JSON.parse(
+            localStorage.getItem("stemmate_active_plan") || "null"
+        );
+
+
+    /* =========================================================
+       SCREEN NAVIGATION
+       ========================================================= */
+
+    function showScreen(screenName) {
+
+        const screens = [
+            "activities",
+            "details",
+            "saved",
+            "plans"
+        ];
+
+        screens.forEach(function(name) {
+
+            const screen =
+                document.getElementById(name + "Screen");
+
+            if (screen) {
+                screen.classList.toggle(
+                    "hidden",
+                    name !== screenName
+                );
+            }
+
+        });
+
+
+        document.querySelectorAll(".nav-btn").forEach(function(button) {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.screen === screenName
+            );
+
+        });
+
+
+        if (screenName === "activities") {
+            filterActivities();
+        }
+
+        if (screenName === "saved") {
+            renderSavedActivities();
+        }
+
+        if (screenName === "plans") {
+            renderPlanWorkspace();
+        }
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
+
+
+    /* =========================================================
+       ACTIVITY FILTERING
+       ========================================================= */
+
+    function filterActivities() {
+
+        const search =
+            document
+                .getElementById("activitySearch")
+                .value
+                .trim()
+                .toLowerCase();
+
+        const subject =
+            document.getElementById("subjectFilter").value;
+
+        const grade =
+            document.getElementById("gradeFilter").value;
+
+
+        const filtered =
+            activities.filter(function(activity) {
+
+                const matchesSearch =
+                    activity.title.toLowerCase().includes(search) ||
+                    activity.subject.toLowerCase().includes(search) ||
+                    activity.description.toLowerCase().includes(search);
+
+                const matchesSubject =
+                    subject === "all" ||
+                    activity.subject === subject;
+
+                const matchesGrade =
+                    grade === "all" ||
+                    activity.grade === grade;
+
+                return (
+                    matchesSearch &&
+                    matchesSubject &&
+                    matchesGrade
+                );
+
+            });
+
+
+        renderActivityList(filtered);
+    }
+
+
+    /* =========================================================
+       ACTIVITY LIST
+       ========================================================= */
+
+    function renderActivityList(list) {
+
+        const container =
+            document.getElementById("activityList");
+
+
+        if (list.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty-state">
+                    <strong>No activities found.</strong>
+                    <p>
+                        Try changing the search or filters.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            list.map(function(activity) {
+
+                return `
+                    <article class="activity-card">
+
+                        <h3>${activity.title}</h3>
+
+                        <div class="activity-meta">
+
+                            <span class="tag">
+                                ${activity.subject}
+                            </span>
+
+                            <span class="tag">
+                                Grade ${activity.grade}
+                            </span>
+
+                            <span class="tag">
+                                ${activity.duration}
+                            </span>
+
+                        </div>
+
+                        <p class="activity-description">
+                            ${activity.description}
+                        </p>
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="openActivity('${activity.id}')"
+                        >
+                            View Activity
+                        </button>
+
+                    </article>
+                `;
+
+            }).join("");
+
+    }
+
+
+    /* =========================================================
+       ACTIVITY DETAILS
+       ========================================================= */
+
+    function openActivity(activityId) {
+
+        const activity =
+            activities.find(
+                function(item) {
+                    return item.id === activityId;
+                }
+            );
+
+
+        if (!activity) {
+            return;
+        }
+
+
+        currentActivityId = activity.id;
+
+
+        const isSaved =
+            savedActivities.includes(activity.id);
+
+
+        document.getElementById("activityDetails").innerHTML = `
+
+            <div class="detail-panel">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="showScreen('activities')"
+                >
+                    ← Back to Activities
+                </button>
+
+                <br><br>
+
+                <p class="section-label">
+                    ${activity.subject} • Grade ${activity.grade}
+                </p>
+
+                <h2 id="detailsHeading">
+                    ${activity.title}
+                </h2>
+
+                <p>
+                    ${activity.description}
+                </p>
+
+
+                <h3>Activity information</h3>
+
+                <ul class="detail-list">
+                    <li>Duration: ${activity.duration}</li>
+                    <li>Difficulty: ${activity.difficulty}</li>
+                </ul>
+
+
+                <h3>Materials</h3>
+
+                <ul class="detail-list">
+
+                    ${activity.materials
+                        .map(function(material) {
+                            return `<li>${material}</li>`;
+                        })
+                        .join("")}
+
+                </ul>
+
+
+                <h3>Safety and inclusion</h3>
+
+                <div class="alert alert-info">
+                    ${activity.safety}
+                </div>
+
+
+                <div class="button-row">
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="toggleSavedActivity()"
+                    >
+                        ${isSaved
+                            ? "Remove from Saved"
+                            : "Save for Offline Use"}
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="createPlanFromActivity()"
+                    >
+                        Add to Session Plan
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+
+        showScreen("details");
+    }
+
+
+    /* =========================================================
+       SAVE / REMOVE OFFLINE ACTIVITY
+       ========================================================= */
+
+    function toggleSavedActivity() {
+
+        if (!currentActivityId) {
+            return;
+        }
+
+
+        if (savedActivities.includes(currentActivityId)) {
+
+            savedActivities =
+                savedActivities.filter(
+                    function(id) {
+                        return id !== currentActivityId;
+                    }
+                );
+
+        } else {
+
+            savedActivities.push(currentActivityId);
+
+        }
+
+
+        localStorage.setItem(
+            "stemmate_saved_activities",
+            JSON.stringify(savedActivities)
+        );
+
+
+        openActivity(currentActivityId);
+    }
+
+
+    /* =========================================================
+       SAVED ACTIVITIES
+       ========================================================= */
+
+    function renderSavedActivities() {
+
+        const container =
+            document.getElementById("savedActivityList");
+
+
+        const saved =
+            activities.filter(
+                function(activity) {
+                    return savedActivities.includes(activity.id);
+                }
+            );
+
+
+        if (saved.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty-state">
+
+                    <strong>
+                        No activities saved yet.
+                    </strong>
+
+                    <p>
+                        Open an activity and choose
+                        "Save for Offline Use".
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            saved.map(function(activity) {
+
+                return `
+                    <article class="activity-card">
+
+                        <h3>
+                            ${activity.title}
+                        </h3>
+
+                        <div class="activity-meta">
+
+                            <span class="tag">
+                                ${activity.subject}
+                            </span>
+
+                            <span class="tag">
+                                Grade ${activity.grade}
+                            </span>
+
+                        </div>
+
+                        <p class="activity-description">
+                            ${activity.description}
+                        </p>
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="openActivity('${activity.id}')"
+                        >
+                            Open Saved Activity
+                        </button>
+
+                    </article>
+                `;
+
+            }).join("");
+
+    }
+
+
+    /* =========================================================
+       SESSION PLAN
+       ========================================================= */
+
+    function createPlanFromActivity() {
+
+        const activity =
+            activities.find(
+                function(item) {
+                    return item.id === currentActivityId;
+                }
+            );
+
+
+        if (!activity) {
+            return;
+        }
+
+
+        currentPlan = {
+
+            activityId: activity.id,
+
+            activityTitle: activity.title,
+
+            date: "",
+
+            safetyNotes: activity.safety,
+
+            girlsCount: 0,
+
+            status: "draft"
+
+        };
+
+
+        savePlanLocally();
+
+        showScreen("plans");
+    }
+
+
+    function renderPlanWorkspace() {
+
+        const container =
+            document.getElementById("planWorkspace");
+
+
+        if (!currentPlan) {
+
+            container.innerHTML = `
+
+                <div class="empty-state">
+
+                    <strong>
+                        No session plan yet.
+                    </strong>
+
+                    <p>
+                        Open an activity and select
+                        "Add to Session Plan".
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const statusLabel =
+            currentPlan.status === "pending"
+                ? "Pending sync"
+                : currentPlan.status === "synced"
+                    ? "Synced"
+                    : "Draft saved locally";
+
+
+        container.innerHTML = `
+
+            <div class="plan-card">
+
+                <div class="plan-status">
+
+                    <strong>
+                        Current Plan
+                    </strong>
+
+                    <span>
+                        ${statusLabel}
+                    </span>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="planActivity">
+                        Activity
+                    </label>
+
+                    <input
+                        type="text"
+                        id="planActivity"
+                        value="${currentPlan.activityTitle}"
+                        readonly
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="planDate">
+                        Intended session date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="planDate"
+                        value="${currentPlan.date}"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="safetyNotes">
+                        Safety and inclusion notes
+                    </label>
+
+                    <textarea
+                        id="safetyNotes"
+                        rows="4"
+                    >${currentPlan.safetyNotes}</textarea>
+
+                </div>
+
+
+                <fieldset class="form-group">
+
+                    <legend>
+                        Session participation
+                    </legend>
+
+                    <label for="girlsCount">
+                        Girls count
+                    </label>
+
+                    <div class="button-row">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="adjustCount(-1)"
+                            aria-label="Decrease girls count"
+                        >
+                            −
+                        </button>
+
+                        <input
+                            type="text"
+                            id="girlsCount"
+                            value="${currentPlan.girlsCount}"
+                            readonly
+                            aria-label="Girls count"
+                        >
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="adjustCount(1)"
+                            aria-label="Increase girls count"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                </fieldset>
+
+
+                <div
+                    id="planMessage"
+                    aria-live="polite"
+                ></div>
+
+
+                <div class="button-row">
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="savePlanDraft()"
+                    >
+                        Save Draft
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="simulateConnectionRestore()"
+                    >
+                        Restore Connection
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="simulateSync()"
+                    >
+                        Sync Plan
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    /* =========================================================
+       PLAN COUNT
+       ========================================================= */
+
+    function adjustCount(delta) {
+
+        if (!currentPlan) {
+            return;
+        }
+
+
+        currentPlan.girlsCount =
+            Math.max(
+                0,
+                currentPlan.girlsCount + delta
+            );
+
+
+        const counter =
+            document.getElementById("girlsCount");
+
+
+        if (counter) {
+            counter.value = currentPlan.girlsCount;
+        }
+
+
+        savePlanLocally();
+    }
+
+
+    /* =========================================================
+       PLAN VALIDATION
+       ========================================================= */
+
+    function collectPlanForm() {
+
+        const date =
+            document.getElementById("planDate").value;
+
+        const safetyNotes =
+            document.getElementById("safetyNotes").value.trim();
+
+
+        if (!date) {
+
+            showPlanMessage(
+                "Please choose a session date before saving.",
+                "error"
+            );
+
+            return false;
+        }
+
+
+        if (!safetyNotes) {
+
+            showPlanMessage(
+                "Please add safety or inclusion notes.",
+                "error"
+            );
+
+            return false;
+        }
+
+
+        currentPlan.date = date;
+        currentPlan.safetyNotes = safetyNotes;
+
+
+        return true;
+    }
+
+
+    /* =========================================================
+       LOCAL DRAFT STORAGE
+       ========================================================= */
+
+    function savePlanLocally() {
+
+        if (!currentPlan) {
+            return;
+        }
+
+
+        localStorage.setItem(
+            "stemmate_active_plan",
+            JSON.stringify(currentPlan)
+        );
+    }
+
+
+    function savePlanDraft() {
+
+        if (!collectPlanForm()) {
+            return;
+        }
+
+
+        currentPlan.status = "pending";
+
+        savePlanLocally();
+
+
+        updateStatus(
+            "pending",
+            "Pending sync — saved locally"
+        );
+
+
+        showPlanMessage(
+            "Draft saved to this device. It can be recovered if connectivity is lost.",
+            "success"
+        );
+
+
+        renderPlanWorkspace();
+    }
+
+
+    /* =========================================================
+       CONNECTION / SYNC SIMULATION
+       ========================================================= */
+
+    function simulateConnectionRestore() {
+
+        updateStatus(
+            "synced",
+            "Connection restored"
+        );
+
+
+        showPlanMessage(
+            "Connection restored. The local draft is ready to synchronize.",
+            "success"
+        );
+    }
+
+
+    function simulateSync() {
+
+        if (!currentPlan) {
+            return;
+        }
+
+
+        if (!collectPlanForm()) {
+            return;
+        }
+
+
+        currentPlan.status = "synced";
+
+        savePlanLocally();
+
+
+        updateStatus(
+            "synced",
+            "Synced successfully"
+        );
+
+
+        showPlanMessage(
+            "Session plan synchronized successfully.",
+            "success"
+        );
+
+
+        renderPlanWorkspace();
+    }
+
+
+    /* =========================================================
+       PLAN FEEDBACK
+       ========================================================= */
+
+    function showPlanMessage(message, type) {
+
+        const container =
+            document.getElementById("planMessage");
+
+
+        if (!container) {
+            return;
+        }
+
+
+        container.className =
+            "alert " +
+            (
+                type === "success"
+                    ? "alert-success"
+                    : "alert-error"
+            );
+
+
+        container.textContent = message;
+    }
+
+
+    /* =========================================================
+       STATUS INDICATOR
+       ========================================================= */
+
+    function updateStatus(type, message) {
+
+        const indicator =
+            document.getElementById("statusIndicator");
+
+        const text =
+            document.getElementById("statusText");
+
+
+        indicator.className =
+            "status-badge " + type;
+
+
+        text.textContent = message;
+    }
+
+
+    /* =========================================================
+       INITIAL APPLICATION LOAD
+       ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            filterActivities();
+
+            renderSavedActivities();
+
+            if (currentPlan) {
+
+                updateStatus(
+                    currentPlan.status === "synced"
+                        ? "synced"
+                        : "pending",
+
+                    currentPlan.status === "synced"
+                        ? "Synced successfully"
+                        : "Draft available locally"
+                );
+
+            }
+
+        }
+    );
+
 </script>
+
 </body>
 </html>
