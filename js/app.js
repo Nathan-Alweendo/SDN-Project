@@ -1440,43 +1440,49 @@ function populatePlannerActivities(
 
 
 /* ============================================================
-   CONNECTION CONTROLS
+   CONNECTION STATUS
 ============================================================ */
 
 function initialiseConnectionControls() {
 
-    document
-        .getElementById(
-            "toggle-connection"
-        )
-        .addEventListener(
-            "click",
-            () => {
+    isOnline =
+        navigator.onLine;
 
-                toggleConnectivity();
+    updateConnectionUI();
 
 
-                document
-                    .getElementById(
-                        "toggle-connection"
-                    )
-                    .textContent =
-                    isOnline
-                        ? "Simulate offline mode"
-                        : "Restore connection";
+    window.addEventListener(
+        "online",
+        () => {
 
-            }
-        );
+            isOnline = true;
+
+            updateConnectionUI();
+
+            showToast(
+                "Connection restored. Sync is available.",
+                "success"
+            );
+
+        }
+    );
 
 
-    document
-        .getElementById(
-            "sync-plan"
-        )
-        .addEventListener(
-            "click",
-            syncPlan
-        );
+    window.addEventListener(
+        "offline",
+        () => {
+
+            isOnline = false;
+
+            updateConnectionUI();
+
+            showToast(
+                "You are offline. Changes will be saved locally.",
+                "warning"
+            );
+
+        }
+    );
 
 }
 
