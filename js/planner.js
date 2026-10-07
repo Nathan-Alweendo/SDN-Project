@@ -1,20 +1,17 @@
 /* ============================================================
    STEMMATE PLANNER
-   Session planning + offline/sync demonstration
+   Session planning + offline/sync support
 ============================================================ */
-
 
 /* ============================================================
    CONNECTION STATE
 ============================================================ */
 
-let isOnline =
-    loadConnectionState();
+let isOnline = navigator.onLine;
 
 
 /* ============================================================
-   GET ALL AVAILABLE ACTIVITIES
-   Includes built-in AND user-created activities.
+   GET ALL ACTIVITIES
 ============================================================ */
 
 function getAllActivities() {
@@ -28,48 +25,191 @@ function getAllActivities() {
 
 
 /* ============================================================
+   PLANNER INITIALISATION
+============================================================ */
+
+function initialisePlanner() {
+
+    document
+        .getElementById("save-draft")
+        .addEventListener(
+            "click",
+            () => {
+
+                saveCurrentPlan(true);
+
+            }
+        );
+
+
+    document
+        .getElementById("save-and-sync")
+        .addEventListener(
+            "click",
+            () => {
+
+                const plan =
+                    saveCurrentPlan(false);
+
+                if (!plan) {
+                    return;
+                }
+
+                syncPlan();
+
+            }
+        );
+
+
+    populatePlannerActivities();
+
+}
+
+
+/* ============================================================
+   POPULATE ACTIVITY SELECT
+============================================================ */
+
+function populatePlannerActivities(
+    selectedId = ""
+) {
+
+    const select =
+        document.getElementById(
+            "planner-activity"
+        );
+
+    if (!select) {
+        return;
+    }
+
+
+    const allActivities =
+        getAllActivities();
+
+
+    const currentValue =
+        selectedId ||
+        select.value;
+
+
+    select.innerHTML = `
+        <option value="">
+            Select an activity
+        </option>
+    `;
+
+
+    allActivities.forEach(
+        activity => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                activity.id;
+
+
+            option.textContent =
+                activity.custom
+                    ? `✦ ${activity.title} — ${activity.subject}`
+                    : `${activity.title} — ${activity.subject}`;
+
+
+            select.appendChild(option);
+
+        }
+    );
+
+
+    if (currentValue) {
+
+        select.value =
+            currentValue;
+
+    }
+
+}
+
+
+/* ============================================================
    CREATE PLAN FROM FORM
 ============================================================ */
 
 function createPlanFromForm() {
 
-    const activityId =
+    const activity =
+        findAnyActivity(
+            document.getElementById(
+                "planner-activity"
+            ).value
+        );
+
+
+    if (!activity) {
+
+        showPlanMessage(
+            "Please select an activity before saving the plan.",
+            "warning"
+        );
+
+        return null;
+
+    }
+
+
+    const date =
         document.getElementById(
-            "planner-activity"
+            "planner-date"
         ).value;
 
-    const activity =
-        getAllActivities().find(
-            item => item.id === activityId
+
+    const learners =
+        document.getElementById(
+            "planner-learners"
+        ).value;
+
+
+    const notes =
+        document.getElementById(
+            "planner-notes"
+        ).value.trim();
+
+
+    if (!date) {
+
+        showPlanMessage(
+            "Please choose a session date.",
+            "warning"
         );
+
+        return null;
+
+    }
+
 
     return {
 
-        activityId,
+        id:
+            `plan-${Date.now()}`,
+
+        activityId:
+            activity.id,
 
         activityTitle:
-            activity
-                ? activity.title
-                : "",
+            activity.title,
 
-        date:
-            document.getElementById(
-                "planner-date"
-            ).value,
+        date,
 
-        learners:
-            Number(
-                document.getElementById(
-                    "planner-learners"
-                ).value
-            ) || 0,
+        learners,
 
-        notes:
-            document.getElementById(
-                "planner-notes"
-            ).value.trim(),
+        notes,
 
-        status: "pending",
+        status:
+            "PENDING",
 
         updatedAt:
             new Date().toISOString()
@@ -87,213 +227,338 @@ function saveCurrentPlan(
     showMessage = true
 ) {
 
-    const plan =
+    const existingPlan =
+        loadCurrentPlan();
+
+
+    const newPlan =
         createPlanFromForm();
 
-    if (!plan.activityId) {
 
-        showPlanMessage(
-            "Select an activity before saving your plan.",
-            "error"
-        );
-
+    if (!newPlan) {
         return null;
+    }
+
+
+    if (existingPlan) {
+
+        newPlan.id =
+            existingPlan.id;
 
     }
 
-    plan.status = "pending";
 
-    savePlan(plan);
+    if (
+        existingPlan &&
+        existingPlan.status === "SYNCED"
+    ) {
 
-    updatePlannerStatus(plan);
+        newPlan.status =
+            "PENDING";
+
+    }
+
+
+    saveCurrentPlanData(
+        newPlan
+    );
+
+
+    updatePlannerStatus(
+        newPlan.status
+    );
+
 
     if (showMessage) {
 
         showPlanMessage(
-            "Plan saved locally.",
+            "Draft saved on this device.",
             "success"
         );
 
     }
 
-    return plan;
+
+    return newPlan;
 
 }
 
 
 /* ============================================================
-   RESTORE PLAN INTO FORM
+   RESTORE SAVED PLAN
 ============================================================ */
 
 function restorePlanIntoForm() {
 
     const plan =
-        loadPlan();
-
-    if (!plan) {
-
-        updatePlannerStatus(null);
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "planner-activity"
-    ).value = plan.activityId || "";
-
-
-    document.getElementById(
-        "planner-date"
-    ).value = plan.date || "";
-
-
-    document.getElementById(
-        "planner-learners"
-    ).value =
-        plan.learners || "";
-
-
-    document.getElementById(
-        "planner-notes"
-    ).value =
-        plan.notes || "";
-
-
-    updatePlannerStatus(plan);
-
-}
-
-
-/* ============================================================
-   UPDATE PLANNER STATUS UI
-============================================================ */
-
-function updatePlannerStatus(plan) {
-
-    const badge =
-        document.getElementById(
-            "planner-status-badge"
-        );
-
-    const localStep =
-        document.getElementById(
-            "sync-step-local"
-        );
-
-    const waitingStep =
-        document.getElementById(
-            "sync-step-waiting"
-        );
-
-    const syncedStep =
-        document.getElementById(
-            "sync-step-synced"
-        );
-
-
-    localStep.classList.remove("active");
-    waitingStep.classList.remove("active");
-    syncedStep.classList.remove("active");
+        loadCurrentPlan();
 
 
     if (!plan) {
-
-        badge.textContent =
-            "No plan";
-
-        badge.className =
-            "status-badge";
-
         return;
+    }
+
+
+    const activitySelect =
+        document.getElementById(
+            "planner-activity"
+        );
+
+
+    const dateInput =
+        document.getElementById(
+            "planner-date"
+        );
+
+
+    const learnersInput =
+        document.getElementById(
+            "planner-learners"
+        );
+
+
+    const notesInput =
+        document.getElementById(
+            "planner-notes"
+        );
+
+
+    if (activitySelect) {
+
+        activitySelect.value =
+            plan.activityId;
 
     }
 
 
-    if (plan.status === "synced") {
+    if (dateInput) {
 
-        badge.textContent =
-            "SYNCED";
-
-        badge.className =
-            "status-badge synced";
-
-        localStep.classList.add("active");
-
-        syncedStep.classList.add("active");
-
-        return;
+        dateInput.value =
+            plan.date;
 
     }
 
 
-    if (plan.status === "failed") {
+    if (learnersInput) {
 
-        badge.textContent =
-            "FAILED";
-
-        badge.className =
-            "status-badge failed";
-
-        localStep.classList.add("active");
-
-        waitingStep.classList.add("active");
-
-        return;
+        learnersInput.value =
+            plan.learners || "";
 
     }
 
 
-    badge.textContent =
-        "PENDING";
+    if (notesInput) {
 
-    badge.className =
-        "status-badge pending";
+        notesInput.value =
+            plan.notes || "";
 
-    localStep.classList.add("active");
-
-    waitingStep.classList.add("active");
-
-}
+    }
 
 
-/* ============================================================
-   TOGGLE ONLINE / OFFLINE
-============================================================ */
-
-function toggleConnectivity() {
-
-    isOnline = !isOnline;
-
-    saveConnectionState(
-        isOnline
+    updatePlannerStatus(
+        plan.status
     );
+
+}
+
+
+/* ============================================================
+   UPDATE PLANNER STATUS
+============================================================ */
+
+function updatePlannerStatus(
+    status
+) {
+
+    const statusLabel =
+        document.getElementById(
+            "planner-status"
+        );
+
+
+    if (!statusLabel) {
+        return;
+    }
+
+
+    statusLabel.className =
+        `plan-status ${status.toLowerCase()}`;
+
+
+    const labels = {
+
+        SYNCED:
+            "✓ Synced",
+
+        PENDING:
+            "◷ Pending sync",
+
+        FAILED:
+            "! Sync failed",
+
+        CONFLICT:
+            "! Conflict"
+
+    };
+
+
+    statusLabel.textContent =
+        labels[status] ||
+        "Not saved";
+
+}
+
+
+/* ============================================================
+   SYNC PLAN
+============================================================ */
+
+function syncPlan() {
+
+    const plan =
+        loadCurrentPlan();
+
+
+    if (!plan) {
+
+        showPlanMessage(
+            "There is no saved plan to synchronize.",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    if (!navigator.onLine) {
+
+        isOnline = false;
+
+        updateConnectionUI();
+
+        plan.status =
+            "PENDING";
+
+        saveCurrentPlanData(
+            plan
+        );
+
+        updatePlannerStatus(
+            "PENDING"
+        );
+
+        showPlanMessage(
+            "Sync unavailable while offline. Your draft was not lost.",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    isOnline = true;
 
     updateConnectionUI();
 
 
-    if (isOnline) {
+    plan.status =
+        "PENDING";
 
-        showPlanMessage(
-            "Connection restored.",
-            "success"
-        );
+    saveCurrentPlanData(
+        plan
+    );
 
-    } else {
+    updatePlannerStatus(
+        "PENDING"
+    );
 
-        showPlanMessage(
-            "Offline mode enabled. Your local work remains available.",
-            "warning"
-        );
 
-    }
+    showPlanMessage(
+        "Connection available. Synchronizing plan...",
+        "success"
+    );
+
+
+    setTimeout(
+        () => {
+
+            if (!navigator.onLine) {
+
+                isOnline = false;
+
+                updateConnectionUI();
+
+                plan.status =
+                    "PENDING";
+
+                saveCurrentPlanData(
+                    plan
+                );
+
+                updatePlannerStatus(
+                    "PENDING"
+                );
+
+                showPlanMessage(
+                    "Connection was lost. Your plan remains saved locally.",
+                    "warning"
+                );
+
+                return;
+
+            }
+
+
+            plan.status =
+                "SYNCED";
+
+            plan.updatedAt =
+                new Date().toISOString();
+
+
+            saveCurrentPlanData(
+                plan
+            );
+
+
+            updatePlannerStatus(
+                "SYNCED"
+            );
+
+
+            showPlanMessage(
+                "Plan synchronized successfully.",
+                "success"
+            );
+
+        },
+        900
+    );
 
 }
 
 
 /* ============================================================
-   UPDATE CONNECTION UI
+   PLANNER FEEDBACK
+============================================================ */
+
+function showPlanMessage(
+    message,
+    type = "success"
+) {
+
+    showToast(
+        message,
+        type
+    );
+
+}
+
+
+/* ============================================================
+   CONNECTION STATUS
 ============================================================ */
 
 function updateConnectionUI() {
@@ -303,10 +568,17 @@ function updateConnectionUI() {
             "connection-status"
         );
 
+
     const label =
         document.getElementById(
             "connection-label"
         );
+
+
+    if (!status || !label) {
+        return;
+    }
+
 
     if (isOnline) {
 
@@ -340,92 +612,63 @@ function updateConnectionUI() {
 
 
 /* ============================================================
-   SYNC PLAN
+   REAL NETWORK DETECTION
 ============================================================ */
 
-function syncPlan() {
+window.addEventListener(
+    "online",
+    () => {
 
-    const plan =
-        loadPlan();
+        isOnline = true;
 
-    if (!plan) {
+        updateConnectionUI();
 
-        showPlanMessage(
-            "There is no saved plan to synchronize.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if (!isOnline) {
-
-        plan.status =
-            "pending";
-
-        savePlan(plan);
-
-        updatePlannerStatus(plan);
-
-        showPlanMessage(
-            "Sync unavailable while offline. Your draft was not lost.",
-            "warning"
-        );
-
-        return;
-
-    }
-
-
-    showPlanMessage(
-        "Synchronizing plan...",
-        "warning"
-    );
-
-
-    setTimeout(() => {
-
-        plan.status =
-            "synced";
-
-        plan.updatedAt =
-            new Date().toISOString();
-
-        savePlan(plan);
-
-        updatePlannerStatus(plan);
-
-        showPlanMessage(
-            "Plan synchronized successfully.",
+        showToast(
+            "Connection restored. Sync is available.",
             "success"
         );
 
-    }, 900);
+        const plan =
+            loadCurrentPlan();
 
-}
+
+        if (
+            plan &&
+            plan.status === "PENDING"
+        ) {
+
+            updatePlannerStatus(
+                "PENDING"
+            );
+
+        }
+
+    }
+);
 
 
-/* ============================================================
-   USER FEEDBACK
-============================================================ */
+window.addEventListener(
+    "offline",
+    () => {
 
-function showPlanMessage(
-    message,
-    type = "success"
-) {
+        isOnline = false;
 
-    if (
-        typeof showToast ===
-        "function"
-    ) {
+        updateConnectionUI();
 
         showToast(
-            message,
-            type
+            "You are offline. Changes will be saved locally.",
+            "warning"
         );
 
     }
+);
 
-}
+
+/* ============================================================
+   INITIAL NETWORK STATE
+============================================================ */
+
+isOnline =
+    navigator.onLine;
+
+updateConnectionUI();

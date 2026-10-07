@@ -3,11 +3,6 @@
    Local browser storage for offline-first behaviour
 ============================================================ */
 
-
-/* ============================================================
-   STORAGE KEYS
-============================================================ */
-
 const STORAGE_KEYS = {
 
     savedActivities:
@@ -17,35 +12,37 @@ const STORAGE_KEYS = {
         "stemmate_custom_activities",
 
     currentPlan:
-        "stemmate_current_plan",
-
-    connection:
-        "stemmate_connection"
+        "stemmate_current_plan"
 
 };
 
 
 /* ============================================================
-   GENERIC STORAGE HELPERS
+   BASIC STORAGE HELPERS
 ============================================================ */
 
-function readStorage(key, fallback) {
+function readStorage(
+    key,
+    fallback
+) {
 
     try {
 
         const value =
             localStorage.getItem(key);
 
+
         if (value === null) {
             return fallback;
         }
+
 
         return JSON.parse(value);
 
     } catch (error) {
 
         console.error(
-            "STEMMate storage read error:",
+            "Storage read failed:",
             error
         );
 
@@ -56,7 +53,10 @@ function readStorage(key, fallback) {
 }
 
 
-function writeStorage(key, value) {
+function writeStorage(
+    key,
+    value
+) {
 
     try {
 
@@ -70,7 +70,7 @@ function writeStorage(key, value) {
     } catch (error) {
 
         console.error(
-            "STEMMate storage write error:",
+            "Storage write failed:",
             error
         );
 
@@ -95,17 +95,21 @@ function loadSavedActivities() {
 }
 
 
-function saveSavedActivities(ids) {
+function saveSavedActivities(
+    activityIds
+) {
 
     return writeStorage(
         STORAGE_KEYS.savedActivities,
-        ids
+        activityIds
     );
 
 }
 
 
-function isActivitySaved(activityId) {
+function isActivitySaved(
+    activityId
+) {
 
     return loadSavedActivities()
         .includes(activityId);
@@ -113,53 +117,56 @@ function isActivitySaved(activityId) {
 }
 
 
-function toggleSavedActivity(activityId) {
+function saveActivity(
+    activityId
+) {
 
     const saved =
         loadSavedActivities();
 
-    const index =
-        saved.indexOf(activityId);
 
-    if (index === -1) {
+    if (
+        !saved.includes(
+            activityId
+        )
+    ) {
 
-        saved.push(activityId);
-
-    } else {
-
-        saved.splice(index, 1);
+        saved.push(
+            activityId
+        );
 
     }
 
-    saveSavedActivities(saved);
 
-    return index === -1;
+    return saveSavedActivities(
+        saved
+    );
+
+}
+
+
+function removeSavedActivity(
+    activityId
+) {
+
+    const saved =
+        loadSavedActivities()
+            .filter(
+                id =>
+                    id !== activityId
+            );
+
+
+    return saveSavedActivities(
+        saved
+    );
 
 }
 
 
 /* ============================================================
-   CUSTOM / USER-CREATED ACTIVITIES
+   CUSTOM ACTIVITIES
 ============================================================ */
-
-/*
-    This is the important part for the new feature.
-
-    Activities created by the teacher are stored locally.
-
-    This means:
-
-    Create activity
-        ↓
-    Save locally
-        ↓
-    Refresh page
-        ↓
-    Activity is still there
-
-    This supports the A3 offline-first concept.
-*/
-
 
 function loadCustomActivities() {
 
@@ -171,43 +178,57 @@ function loadCustomActivities() {
 }
 
 
-function saveCustomActivities(activitiesList) {
+function saveCustomActivities(
+    activities
+) {
 
     return writeStorage(
         STORAGE_KEYS.customActivities,
-        activitiesList
+        activities
     );
 
 }
 
 
-function addCustomActivity(activity) {
+function addCustomActivity(
+    activity
+) {
 
     const customActivities =
         loadCustomActivities();
 
-    customActivities.unshift(activity);
 
-    saveCustomActivities(
-        customActivities
+    customActivities.push(
+        activity
     );
 
-    return activity;
+
+    return saveCustomActivities(
+        customActivities
+    );
 
 }
 
 
-function deleteCustomActivity(activityId) {
+function deleteCustomActivity(
+    activityId
+) {
 
-    const updatedActivities =
+    const customActivities =
         loadCustomActivities()
             .filter(
                 activity =>
                     activity.id !== activityId
             );
 
+
     saveCustomActivities(
-        updatedActivities
+        customActivities
+    );
+
+
+    removeSavedActivity(
+        activityId
     );
 
 }
@@ -217,7 +238,7 @@ function deleteCustomActivity(activityId) {
    CURRENT SESSION PLAN
 ============================================================ */
 
-function loadPlan() {
+function loadCurrentPlan() {
 
     return readStorage(
         STORAGE_KEYS.currentPlan,
@@ -227,7 +248,9 @@ function loadPlan() {
 }
 
 
-function savePlan(plan) {
+function saveCurrentPlanData(
+    plan
+) {
 
     return writeStorage(
         STORAGE_KEYS.currentPlan,
@@ -237,34 +260,25 @@ function savePlan(plan) {
 }
 
 
-function clearPlan() {
+function clearCurrentPlan() {
 
-    localStorage.removeItem(
-        STORAGE_KEYS.currentPlan
-    );
+    try {
 
-}
+        localStorage.removeItem(
+            STORAGE_KEYS.currentPlan
+        );
 
+        return true;
 
-/* ============================================================
-   CONNECTION STATE
-============================================================ */
+    } catch (error) {
 
-function loadConnectionState() {
+        console.error(
+            "Could not clear saved plan:",
+            error
+        );
 
-    return readStorage(
-        STORAGE_KEYS.connection,
-        true
-    );
+        return false;
 
-}
-
-
-function saveConnectionState(isOnline) {
-
-    return writeStorage(
-        STORAGE_KEYS.connection,
-        isOnline
-    );
+    }
 
 }
