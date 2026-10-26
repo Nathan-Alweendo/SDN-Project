@@ -1,697 +1,330 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-
-    <meta charset="utf-8"/>
-
-
-
-    <!-- Makes STEMMate responsive on phones, tablets and desktops -->
-
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-
-
-
-    <meta content="STEMMate Namibia - An offline-first STEM activity and lesson planning tool." name="description"/>
-
-
-
-    <title>STEMMate Namibia</title>
-
-
-
-    <!-- Main application stylesheet -->
-
-    <link href="css/styles.css" rel="stylesheet"/>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="STEMMate Namibia - An offline-first STEM activity and lesson planning tool." name="description"/>
+    <title>STEMMate Namibia</title>
+    <link href="css/styles.css" rel="stylesheet"/>
 </head>
 <body>
 
-
-
-    <!-- =========================================================
-
-         ACCESSIBILITY: SKIP LINK
-
-         Allows keyboard users to skip directly to the main content.
-
-    ========================================================== -->
-
-
-
-    <a class="skip-link" href="#main-content">
-
-        Skip to main content
-
-    </a>
-
-
-
-
-
-    <!-- =========================================================
-
-         APPLICATION SHELL
-
-    ========================================================== -->
-
-
-
-    <div class="app-shell">
-
-
-
-        <!-- =====================================================
-
-             TOP BAR
-
-        ====================================================== -->
-
-
-
-        <header class="topbar">
-
-
-
-            <div class="brand">
-
-
-
-                <div class="brand-mark">
-
-                    S
-
-                </div>
-
-
-
-                <div>
-
-                    <strong>STEMMate</strong>
-
-                    
-
-                </div>
-
-
-
-            </div>
-
-
-
-
-
-            <!-- Connection status -->
-
-            <div aria-live="polite" class="connection-status online" id="connection-status">
-
-                <span class="status-dot"></span>
-
-                <span id="connection-label">Online</span>
-
-            </div>
-
-
-
-        </header>
-
-
-
-
-
-        <!-- =====================================================
-
-             MAIN NAVIGATION
-
-        ====================================================== -->
-
-
-
-        <nav aria-label="Main navigation" class="main-nav">
-
-
-
-            <button class="nav-btn active" data-screen="home">
-
-                <span>⌂</span>
-
-                Home
-
-            </button>
-
-
-
-            <button class="nav-btn" data-screen="activities">
-
-                <span>▦</span>
-
-                Activities
-
-            </button>
-
-
-
-            <button class="nav-btn" data-screen="my-activities">
-
-                <span>✦</span>
-
-                My Activities
-
-            </button>
-
-
-
-            <button class="nav-btn" data-screen="saved">
-
-                <span>♡</span>
-
-                Saved
-
-            </button>
-
-
-
-            <button class="nav-btn" data-screen="planner">
-
-                <span>☷</span>
-
-                Planner
-
-            </button>
-
-
-
-        </nav>
-
-
-
-
-
-        <!-- =====================================================
-
-             MAIN CONTENT
-
-        ====================================================== -->
-
-
-
-        <main class="main-content" id="main-content">
-<!-- HOME SCREEN -->
-<section class="screen" data-screen-panel="home" id="screen-home">
-<div class="hero">
-<div class="hero-content">
-<span class="eyebrow">STEMMATE NAMIBIA</span>
-<h1>Plan your next<br/>STEM session.</h1>
-<p>Find activities, prepare lessons, and keep your work available when connectivity is limited.</p>
-</div>
-</div>
-<button class="home-search btn btn-secondary" data-screen="activities" style="width:100%; justify-content:flex-start; margin-bottom:24px;">
-<span class="home-search-icon">⌕</span>
-<span>Find an activity</span>
-<span class="home-search-arrow">→</span>
-</button>
-<div class="section-heading home-section-heading">
-<div>
-<span class="eyebrow">QUICK ACCESS</span>
-<h2>What do you need?</h2>
-</div>
-</div>
-<div class="quick-grid">
-<button class="quick-card" data-screen="activities">
-<span class="quick-icon blue">▦</span>
-<strong>Explore activities</strong>
-<span>Browse ready-to-use STEM resources.</span>
-</button>
-<button class="quick-card" data-screen="planner">
-<span class="quick-icon green">☷</span>
-<strong>Plan a session</strong>
-<span>Turn an activity into a lesson plan.</span>
-</button>
-<button class="quick-card" data-screen="my-activities">
-<span class="quick-icon purple">✦</span>
-<div>
-<strong>My activities</strong>
-<span>Your own STEM resources saved on this device.</span>
-</div>
-</button>
-</div>
-<div class="section-heading">
-<div>
-<span class="eyebrow">STARTER RESOURCES</span>
-<h2>Featured activities</h2>
-</div>
-<button class="text-btn" data-screen="activities">
+    <a class="skip-link" href="#main-content">
+        Skip to main content
+    </a>
+
+    <div class="app-shell">
+
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">S</div>
+                <div class="brand-text">
+                    <strong>STEMMate</strong>
+                </div>
+            </div>
+            <div aria-live="polite" class="connection-status online" id="connection-status">
+                <span class="status-dot"></span>
+                <span id="connection-label">Online</span>
+            </div>
+        </header>
+
+        <!-- Bottom Nav Bar -->
+        <nav aria-label="Main navigation" class="main-nav">
+            <button class="nav-btn active" data-screen="home">
+                <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></span>
+                Home
+            </button>
+            <button class="nav-btn" data-screen="activities">
+                <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+                Activities
+            </button>
+            <button class="nav-btn" data-screen="my-activities">
+                <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 3 14.7 8.5 21 9.4l-4.5 4.4 1.1 6.2L12 17l-5.6 3 1.1-6.2L3 9.4l6.3-.9z"/></svg></span>
+                My Activities
+            </button>
+            <button class="nav-btn" data-screen="saved">
+                <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 10.2-8.8 10.2S3.2 13.8 3.2 8.8A4.3 4.3 0 0 1 12 6.6a4.3 4.3 0 0 1 8.8 2.2Z"/></svg></span>
+                Saved
+            </button>
+            <button class="nav-btn" data-screen="planner">
+                <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 14h3M8 17h7"/></svg></span>
+                Planner
+            </button>
+        </nav>
+
+        <main class="main-content" id="main-content">
+
+            <!-- Home Screen -->
+            <section class="screen" data-screen-panel="home" id="screen-home">
+                <div class="hero">
+                    <div class="hero-content">
+                        <span class="eyebrow">STEMMATE NAMIBIA</span>
+                        <h1>Plan your next<br/>STEM session.</h1>
+                        <p>Find activities, prepare lessons, and keep your work available when connectivity is limited.</p>
+                    </div>
+                </div>
+                
+                <button class="home-search btn btn-secondary" data-screen="activities" style="width:100%; justify-content:flex-start; margin-bottom:24px;">
+                    <span class="home-search-icon">⌕</span>
+                    <span>Find an activity</span>
+                    <span class="home-search-arrow">→</span>
+                </button>
+
+                <div class="section-heading home-section-heading">
+                    <div>
+                        <span class="eyebrow">QUICK ACCESS</span>
+                        <h2>What do you need?</h2>
+                    </div>
+                </div>
+                
+                <div class="quick-grid">
+                    <button class="quick-card" data-screen="activities">
+                        <span class="quick-icon blue">▦</span>
+                        <strong>Explore activities</strong>
+                        <span>Browse ready-to-use STEM resources.</span>
+                    </button>
+                    <button class="quick-card" data-screen="planner">
+                        <span class="quick-icon green">☷</span>
+                        <strong>Plan a session</strong>
+                        <span>Turn an activity into a lesson plan.</span>
+                    </button>
+                    <button class="quick-card" data-screen="my-activities">
+                        <span class="quick-icon purple">✦</span>
+                        <div>
+                            <strong>My activities</strong>
+                            <span>Your own STEM resources saved on this device.</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">STARTER RESOURCES</span>
+                        <h2>Featured activities</h2>
+                    </div>
+                    <button class="text-btn" data-screen="activities">
                         View all →
                     </button>
-</div>
-<div class="activity-grid" id="featured-activities"></div>
-</section>
-<!-- ACTIVITIES SCREEN -->
-<section class="screen" data-screen-panel="activities" hidden="" id="screen-activities">
-<div class="section-heading">
-<div>
-<span class="eyebrow">STEM LIBRARY</span>
-<h1>Explore activities</h1>
-<p>Find ready-to-use STEM activities for your next session.</p>
-</div>
-<button class="btn btn-primary" id="create-activity-from-library" type="button">
-            + Create activity
-        </button>
-</div>
-<div class="filter-panel">
-<div class="search-box">
-<label for="activity-search">Search the library</label>
-<input autocomplete="off" id="activity-search" placeholder="Search activities..." type="search"/>
-</div>
-<div class="filter-field">
-<label for="subject-filter">Subject</label>
-<select id="subject-filter">
-<option value="all">All subjects</option>
-</select>
-</div>
-<div class="filter-field">
-<label for="grade-filter">Grade</label>
-<select id="grade-filter">
-<option value="all">All grades</option>
-</select>
-</div>
-</div>
-<div class="activity-grid" id="activity-results"></div>
-</section>
-
-
-
-
-
-
-
-            <!-- =================================================
-
-                 MY ACTIVITIES SCREEN
-
-            ================================================== -->
-
-
-
-            <section class="screen" data-screen-panel="my-activities" hidden="" id="screen-my-activities">
-
-
-
-                <div class="section-heading">
-
-
-
-                    <div>
-
-
-
-                        <span class="eyebrow">
-
-                            YOUR RESOURCES
-
-                        </span>
-
-
-
-                        <h1>
-
-                            My Activities
-
-                        </h1>
-
-
-
-                        <p>
-
-                            Activities you have created and saved on this device.
-
-                        </p>
-
-
-
-                    </div>
-
-
-
-                    <button class="btn btn-primary" id="create-activity-from-my-library">
-
-                        + Create activity
-
-                    </button>
-
-
-
-                </div>
-
-
-
-
-
-                <!-- User-created activities appear here -->
-
-
-
-                <div class="activity-grid" id="my-activities-list"></div>
-
-
-
-
-
-                <!-- Empty state -->
-
-
-
-                <div class="empty-state" hidden="" id="my-activities-empty">
-
-
-
-                    <div class="empty-icon">
-
-                        ✦
-
-                    </div>
-
-
-
-                    <h2>
-
-                        No activities yet
-
-                    </h2>
-
-
-
-                    <p>
-
-                        Create your first STEM activity and it will appear here.
-
-                    </p>
-
-
-
-                    <button class="btn btn-primary" id="create-first-activity">
-
-                        Create my first activity
-
-                    </button>
-
-
-
-                </div>
-
-
-
-            </section>
-
-
-
-
-
-
-
-            <!-- =================================================
-
-                 CREATE ACTIVITY SCREEN
-
-            ================================================== -->
-
-
-
-            <section class="screen" data-screen-panel="create-activity" hidden id="screen-create-activity">
-
-    <div class="section-heading">
-        <div>
-            <span class="eyebrow">CREATE RESOURCE</span>
-            <h1>Create an activity</h1>
-            <p>Build your own STEM activity and save it on this device.</p>
-        </div>
-    </div>
-
-    <form class="form-card" id="create-activity-form">
-
-        <div class="form-section">
-            <div class="form-section-heading">
-                <span class="form-section-number">01</span>
-                <div>
-                    <h2>Basic information</h2>
-                    <p>Give your activity a clear identity.</p>
                 </div>
-            </div>
+                <div class="activity-grid" id="featured-activities"></div>
+            </section>
 
-            <div class="form-grid">
-                <div class="form-field full">
-                    <label for="custom-title">Activity title *</label>
-                    <input id="custom-title" name="title" type="text" placeholder="e.g. Build a Simple Water Filter" required>
+            <!-- Activities Screen -->
+            <section class="screen" data-screen-panel="activities" hidden id="screen-activities">
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">STEM LIBRARY</span>
+                        <h1>Explore activities</h1>
+                        <p>Find ready-to-use STEM activities for your next session.</p>
+                    </div>
+                    <button class="btn btn-primary" id="create-activity-from-library" type="button">
+                        + Create activity
+                    </button>
+                </div>
+                
+                <div class="filter-panel">
+                    <div class="search-box">
+                        <label for="activity-search">Search the library</label>
+                        <input autocomplete="off" id="activity-search" placeholder="Search activities..." type="search"/>
+                    </div>
+                    <div class="filter-field">
+                        <label for="subject-filter">Subject</label>
+                        <select id="subject-filter">
+                            <option value="all">All subjects</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label for="grade-filter">Grade</label>
+                        <select id="grade-filter">
+                            <option value="all">All grades</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="activity-grid" id="activity-results"></div>
+            </section>
+
+            <!-- My Activities Screen -->
+            <section class="screen" data-screen-panel="my-activities" hidden id="screen-my-activities">
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">YOUR RESOURCES</span>
+                        <h1>My Activities</h1>
+                        <p>Activities you have created and saved on this device.</p>
+                    </div>
+                    <button class="btn btn-primary" id="create-activity-from-my-library">
+                        + Create activity
+                    </button>
+                </div>
+                
+                <div class="activity-grid" id="my-activities-list"></div>
+                
+                <div class="empty-state" hidden id="my-activities-empty">
+                    <div class="empty-icon">✦</div>
+                    <h2>No activities yet</h2>
+                    <p>Create your first STEM activity and it will appear here.</p>
+                    <button class="btn btn-primary" id="create-first-activity">
+                        Create my first activity
+                    </button>
+                </div>
+            </section>
+
+            <!-- Create Activity Screen -->
+            <section class="screen" data-screen-panel="create-activity" hidden id="screen-create-activity">
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">CREATE RESOURCE</span>
+                        <h1>Create an activity</h1>
+                        <p>Build your own STEM activity and save it on this device.</p>
+                    </div>
                 </div>
 
-                <div class="form-field">
-                    <label for="custom-subject">Subject *</label>
-                    <select id="custom-subject" name="subject" required>
-                        <option value="">Select subject</option>
-                        <option value="Physics">Physics</option>
-                        <option value="Biology">Biology</option>
-                        <option value="Chemistry">Chemistry</option>
-                        <option value="Mathematics">Mathematics</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="General STEM">General STEM</option>
-                    </select>
+                <form class="form-card" id="create-activity-form">
+                    <div class="form-section">
+                        <div class="form-section-heading">
+                            <span class="form-section-number">01</span>
+                            <div>
+                                <h2>Basic information</h2>
+                                <p>Give your activity a clear identity.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field full">
+                                <label for="custom-title">Activity title *</label>
+                                <input id="custom-title" name="title" type="text" placeholder="e.g. Build a Simple Water Filter" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="custom-subject">Subject *</label>
+                                <select id="custom-subject" name="subject" required>
+                                    <option value="">Select subject</option>
+                                    <option value="Physics">Physics</option>
+                                    <option value="Biology">Biology</option>
+                                    <option value="Chemistry">Chemistry</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="General STEM">General STEM</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="custom-grade">Grade *</label>
+                                <select id="custom-grade" name="grade" required>
+                                    <option value="">Select grade</option>
+                                    <option value="Grade 7">Grade 7</option>
+                                    <option value="Grade 8">Grade 8</option>
+                                    <option value="Grade 9">Grade 9</option>
+                                    <option value="Grade 10">Grade 10</option>
+                                    <option value="Grade 11">Grade 11</option>
+                                    <option value="Grade 12">Grade 12</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="custom-duration">Duration *</label>
+                                <input id="custom-duration" name="duration" type="text" placeholder="e.g. 45 minutes" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="custom-learners">Number of learners</label>
+                                <input id="custom-learners" name="learners" type="number" min="1" placeholder="e.g. 30">
+                            </div>
+                            <div class="form-field full">
+                                <label for="custom-icon">Activity type</label>
+                                <select id="custom-icon" name="icon">
+                                    <option value="🧪">🧪 Experiment</option>
+                                    <option value="⚡">⚡ Physics</option>
+                                    <option value="🌱">🌱 Biology</option>
+                                    <option value="🔬">🔬 Science</option>
+                                    <option value="💻">💻 Computing</option>
+                                    <option value="📐">📐 Mathematics</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-heading">
+                            <span class="form-section-number">02</span>
+                            <div>
+                                <h2>Learning content</h2>
+                                <p>Give learners and teachers the information they need.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field full">
+                                <label for="custom-description">Description and instructions *</label>
+                                <textarea id="custom-description" name="description" placeholder="Explain what learners will do..." required></textarea>
+                            </div>
+                            <div class="form-field full">
+                                <label for="custom-objective">Learning objective *</label>
+                                <textarea id="custom-objective" name="objective" placeholder="What should learners understand or be able to do?" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-heading">
+                            <span class="form-section-number">03</span>
+                            <div>
+                                <h2>Safety and access</h2>
+                                <p>Make the activity practical and inclusive.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field full">
+                                <label for="custom-materials">Materials</label>
+                                <textarea id="custom-materials" name="materials" placeholder="List materials learners or teachers will need..."></textarea>
+                            </div>
+                            <div class="form-field full">
+                                <label for="custom-safety">Safety notes</label>
+                                <textarea id="custom-safety" name="safety" placeholder="Add hazards, precautions or supervision notes..."></textarea>
+                            </div>
+                            <div class="form-field full">
+                                <label for="custom-accessibility">Accessibility and inclusion notes</label>
+                                <textarea id="custom-accessibility" name="accessibility" placeholder="Add adaptations, alternatives or accessibility guidance..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancel-create-activity" class="btn btn-secondary">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Save activity
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Activity Detail Screen -->
+            <section class="screen" data-screen-panel="activity-detail" hidden id="screen-activity-detail">
+                <div id="activity-detail"></div>
+            </section>
+
+            <!-- Saved Screen -->
+            <section class="screen" data-screen-panel="saved" hidden id="screen-saved">
+                <div class="section-heading">
+                    <div>
+                        <span class="eyebrow">OFFLINE READY</span>
+                        <h1>Saved activities</h1>
+                        <p>Activities available for quick access on this device.</p>
+                    </div>
                 </div>
-
-                <div class="form-field">
-                    <label for="custom-grade">Grade *</label>
-                    <select id="custom-grade" name="grade" required>
-                        <option value="">Select grade</option>
-                        <option value="Grade 7">Grade 7</option>
-                        <option value="Grade 8">Grade 8</option>
-                        <option value="Grade 9">Grade 9</option>
-                        <option value="Grade 10">Grade 10</option>
-                        <option value="Grade 11">Grade 11</option>
-                        <option value="Grade 12">Grade 12</option>
-                    </select>
+                
+                <div class="activity-grid" id="saved-activities"></div>
+                
+                <div class="empty-state" hidden id="saved-empty">
+                    <div class="empty-icon">♡</div>
+                    <h2>Nothing saved yet</h2>
+                    <p>Save activities from the library to access them quickly.</p>
+                    <button class="btn btn-primary" data-screen="activities">
+                        Explore activities
+                    </button>
                 </div>
+            </section>
 
-                <div class="form-field">
-                    <label for="custom-duration">Duration *</label>
-                    <input id="custom-duration" name="duration" type="text" placeholder="e.g. 45 minutes" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="custom-learners">Number of learners</label>
-                    <input id="custom-learners" name="learners" type="number" min="1" placeholder="e.g. 30">
-                </div>
-
-                <div class="form-field full">
-                    <label for="custom-icon">Activity type</label>
-                    <select id="custom-icon" name="icon">
-                        <option value="🧪">🧪 Experiment</option>
-                        <option value="⚡">⚡ Physics</option>
-                        <option value="🌱">🌱 Biology</option>
-                        <option value="🔬">🔬 Science</option>
-                        <option value="💻">💻 Computing</option>
-                        <option value="📐">📐 Mathematics</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <div class="form-section-heading">
-                <span class="form-section-number">02</span>
-                <div>
-                    <h2>Learning content</h2>
-                    <p>Give learners and teachers the information they need.</p>
-                </div>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-field full">
-                    <label for="custom-description">Description and instructions *</label>
-                    <textarea id="custom-description" name="description" placeholder="Explain what learners will do..." required></textarea>
-                </div>
-
-                <div class="form-field full">
-                    <label for="custom-objective">Learning objective *</label>
-                    <textarea id="custom-objective" name="objective" placeholder="What should learners understand or be able to do?" required></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <div class="form-section-heading">
-                <span class="form-section-number">03</span>
-                <div>
-                    <h2>Safety and access</h2>
-                    <p>Make the activity practical and inclusive.</p>
-                </div>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-field full">
-                    <label for="custom-materials">Materials</label>
-                    <textarea id="custom-materials" name="materials" placeholder="List materials learners or teachers will need..."></textarea>
-                </div>
-
-                <div class="form-field full">
-                    <label for="custom-safety">Safety notes</label>
-                    <textarea id="custom-safety" name="safety" placeholder="Add hazards, precautions or supervision notes..."></textarea>
-                </div>
-
-                <div class="form-field full">
-                    <label for="custom-accessibility">Accessibility and inclusion notes</label>
-                    <textarea id="custom-accessibility" name="accessibility" placeholder="Add adaptations, alternatives or accessibility guidance..."></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button type="button" id="cancel-create-activity" class="btn btn-secondary">
-                Cancel
-            </button>
-
-            <button type="submit" class="btn btn-primary">
-                Save activity
-            </button>
-        </div>
-
-    </form>
-
-</section>
-
-
-<section class="screen" data-screen-panel="activity-detail" hidden="" id="screen-activity-detail">
-
-
-
-                <div id="activity-detail"></div>
-
-
-
-            </section>
-
-
-
-
-
-
-
-            <!-- =================================================
-
-                 SAVED ACTIVITIES SCREEN
-
-            ================================================== -->
-
-
-
-            <section class="screen" data-screen-panel="saved" hidden="" id="screen-saved">
-
-
-
-                <div class="section-heading">
-
-
-
-                    <div>
-
-
-
-                        <span class="eyebrow">
-
-                            OFFLINE READY
-
-                        </span>
-
-
-
-                        <h1>
-
-                            Saved activities
-
-                        </h1>
-
-
-
-                        <p>
-
-                            Activities available for quick access on this device.
-
-                        </p>
-
-
-
-                    </div>
-
-
-
-                </div>
-
-
-
-
-
-                <div class="activity-grid" id="saved-activities"></div>
-
-
-
-
-
-                <div class="empty-state" hidden="" id="saved-empty">
-
-
-
-                    <div class="empty-icon">
-
-                        ♡
-
-                    </div>
-
-
-
-                    <h2>
-
-                        Nothing saved yet
-
-                    </h2>
-
-
-
-                    <p>
-
-                        Save activities from the library to access them quickly.
-
-                    </p>
-
-
-
-                    <button class="btn btn-primary" data-screen="activities">
-
-                        Explore activities
-
-                    </button>
-
-
-
-                </div>
-
-
-
-            </section>
-
-
-
-
-
-
-
-            <!-- =================================================
-
-                 PLANNER SCREEN
-
-            ================================================== -->
-
-
-
-            <section class="screen" data-screen-panel="planner" hidden id="screen-planner">
-
+            <!-- Planner Screen -->
+            <section class="screen" data-screen-panel="planner" hidden id="screen-planner">
                 <div class="section-heading">
                     <div>
                         <span class="eyebrow">SESSION PLANNING</span>
@@ -701,7 +334,6 @@
                 </div>
 
                 <div class="planner-layout">
-
                     <form class="form-card" id="planner-form">
                         <div class="section-heading">
                             <div>
@@ -722,7 +354,6 @@
                                 <label for="planner-date">Session date</label>
                                 <input id="planner-date" type="date">
                             </div>
-
                             <div class="form-field">
                                 <label for="planner-learners">Number of learners</label>
                                 <input id="planner-learners" type="number" min="1" placeholder="e.g. 30">
@@ -743,7 +374,7 @@
                     <aside class="status-card">
                         <div class="status-card-heading">
                             <span class="eyebrow">SYNC STATUS</span>
-                            <span class="status-badge" id="planner-status-badge">No plan</span>
+                            <span class="status-badge" id="planner-status">No plan</span>
                         </div>
 
                         <div class="sync-steps">
@@ -754,7 +385,6 @@
                                     <span>Your work is stored on this device.</span>
                                 </div>
                             </div>
-
                             <div class="sync-step" id="sync-step-waiting">
                                 <span class="sync-step-icon">↗</span>
                                 <div>
@@ -762,7 +392,6 @@
                                     <span>The plan can sync when connectivity returns.</span>
                                 </div>
                             </div>
-
                             <div class="sync-step" id="sync-step-synced">
                                 <span class="sync-step-icon">✓</span>
                                 <div>
@@ -776,51 +405,17 @@
                             <button class="btn btn-primary" id="sync-plan" type="button">Sync plan</button>
                         </div>
                     </aside>
-
                 </div>
-
             </section>
 
+        </main>
 
+        <div aria-live="polite" class="toast" hidden id="toast" role="status"></div>
+    </div>
 
-        </main>
-
-
-
-
-
-        <!-- =====================================================
-
-             TOAST / FEEDBACK
-
-        ====================================================== -->
-
-
-
-        <div aria-live="polite" class="toast" hidden="" id="toast" role="status"></div>
-
-
-
-    </div>
-
-
-
-
-
-    <!-- =========================================================
-
-         JAVASCRIPT
-
-    ========================================================== -->
-
-
-
-    <script src="js/storage.js"></script>
-
-    <script src="js/activities.js"></script>
-
-    <script src="js/planner.js"></script>
-
-    <script src="js/app.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/activities.js"></script>
+    <script src="js/planner.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>

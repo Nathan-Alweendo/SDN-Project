@@ -1,8 +1,3 @@
-/* ============================================================
-   STEMMATE STORAGE
-   Local browser storage for offline-first behaviour
-============================================================ */
-
 const STORAGE_KEYS = {
 
     savedActivities:
@@ -16,11 +11,6 @@ const STORAGE_KEYS = {
 
 };
 
-
-/* ============================================================
-   BASIC STORAGE HELPERS
-============================================================ */
-
 function readStorage(
     key,
     fallback
@@ -31,11 +21,9 @@ function readStorage(
         const value =
             localStorage.getItem(key);
 
-
         if (value === null) {
             return fallback;
         }
-
 
         return JSON.parse(value);
 
@@ -51,7 +39,6 @@ function readStorage(
     }
 
 }
-
 
 function writeStorage(
     key,
@@ -80,11 +67,6 @@ function writeStorage(
 
 }
 
-
-/* ============================================================
-   SAVED ACTIVITIES
-============================================================ */
-
 function loadSavedActivities() {
 
     return readStorage(
@@ -93,7 +75,6 @@ function loadSavedActivities() {
     );
 
 }
-
 
 function saveSavedActivities(
     activityIds
@@ -106,7 +87,6 @@ function saveSavedActivities(
 
 }
 
-
 function isActivitySaved(
     activityId
 ) {
@@ -116,14 +96,12 @@ function isActivitySaved(
 
 }
 
-
 function saveActivity(
     activityId
 ) {
 
     const saved =
         loadSavedActivities();
-
 
     if (
         !saved.includes(
@@ -137,13 +115,11 @@ function saveActivity(
 
     }
 
-
     return saveSavedActivities(
         saved
     );
 
 }
-
 
 function removeSavedActivity(
     activityId
@@ -156,17 +132,11 @@ function removeSavedActivity(
                     id !== activityId
             );
 
-
     return saveSavedActivities(
         saved
     );
 
 }
-
-
-/* ============================================================
-   CUSTOM ACTIVITIES
-============================================================ */
 
 function loadCustomActivities() {
 
@@ -176,7 +146,6 @@ function loadCustomActivities() {
     );
 
 }
-
 
 function saveCustomActivities(
     activities
@@ -189,7 +158,6 @@ function saveCustomActivities(
 
 }
 
-
 function addCustomActivity(
     activity
 ) {
@@ -197,18 +165,15 @@ function addCustomActivity(
     const customActivities =
         loadCustomActivities();
 
-
     customActivities.push(
         activity
     );
-
 
     return saveCustomActivities(
         customActivities
     );
 
 }
-
 
 function deleteCustomActivity(
     activityId
@@ -221,22 +186,15 @@ function deleteCustomActivity(
                     activity.id !== activityId
             );
 
-
     saveCustomActivities(
         customActivities
     );
-
 
     removeSavedActivity(
         activityId
     );
 
 }
-
-
-/* ============================================================
-   CURRENT SESSION PLAN
-============================================================ */
 
 function loadCurrentPlan() {
 
@@ -246,7 +204,6 @@ function loadCurrentPlan() {
     );
 
 }
-
 
 function saveCurrentPlanData(
     plan
@@ -258,7 +215,6 @@ function saveCurrentPlanData(
     );
 
 }
-
 
 function clearCurrentPlan() {
 

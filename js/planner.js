@@ -1,18 +1,4 @@
-/* ============================================================
-   STEMMATE PLANNER
-   Session planning + offline/sync support
-============================================================ */
-
-/* ============================================================
-   CONNECTION STATE
-============================================================ */
-
 let isOnline = navigator.onLine;
-
-
-/* ============================================================
-   GET ALL ACTIVITIES
-============================================================ */
 
 function getAllActivities() {
 
@@ -23,52 +9,24 @@ function getAllActivities() {
 
 }
 
-
-/* ============================================================
-   PLANNER INITIALISATION
-============================================================ */
-
 function initialisePlanner() {
+    document.getElementById("save-draft").addEventListener("click", () => {
+        saveCurrentPlan(true);
+    });
 
-    document
-        .getElementById("save-draft")
-        .addEventListener(
-            "click",
-            () => {
+    document.getElementById("save-and-sync").addEventListener("click", () => {
+        const plan = saveCurrentPlan(false);
+        if (!plan) return;
+        syncPlan();
+    });
 
-                saveCurrentPlan(true);
-
-            }
-        );
-
-
-    document
-        .getElementById("save-and-sync")
-        .addEventListener(
-            "click",
-            () => {
-
-                const plan =
-                    saveCurrentPlan(false);
-
-                if (!plan) {
-                    return;
-                }
-
-                syncPlan();
-
-            }
-        );
-
+    // ADD THIS BLOCK:
+    document.getElementById("sync-plan").addEventListener("click", () => {
+        syncPlan();
+    });
 
     populatePlannerActivities();
-
 }
-
-
-/* ============================================================
-   POPULATE ACTIVITY SELECT
-============================================================ */
 
 function populatePlannerActivities(
     selectedId = ""
@@ -83,22 +41,18 @@ function populatePlannerActivities(
         return;
     }
 
-
     const allActivities =
         getAllActivities();
-
 
     const currentValue =
         selectedId ||
         select.value;
-
 
     select.innerHTML = `
         <option value="">
             Select an activity
         </option>
     `;
-
 
     allActivities.forEach(
         activity => {
@@ -108,22 +62,18 @@ function populatePlannerActivities(
                     "option"
                 );
 
-
             option.value =
                 activity.id;
-
 
             option.textContent =
                 activity.custom
                     ? `✦ ${activity.title} — ${activity.subject}`
                     : `${activity.title} — ${activity.subject}`;
 
-
             select.appendChild(option);
 
         }
     );
-
 
     if (currentValue) {
 
@@ -134,11 +84,6 @@ function populatePlannerActivities(
 
 }
 
-
-/* ============================================================
-   CREATE PLAN FROM FORM
-============================================================ */
-
 function createPlanFromForm() {
 
     const activity =
@@ -147,7 +92,6 @@ function createPlanFromForm() {
                 "planner-activity"
             ).value
         );
-
 
     if (!activity) {
 
@@ -160,24 +104,20 @@ function createPlanFromForm() {
 
     }
 
-
     const date =
         document.getElementById(
             "planner-date"
         ).value;
-
 
     const learners =
         document.getElementById(
             "planner-learners"
         ).value;
 
-
     const notes =
         document.getElementById(
             "planner-notes"
         ).value.trim();
-
 
     if (!date) {
 
@@ -189,7 +129,6 @@ function createPlanFromForm() {
         return null;
 
     }
-
 
     return {
 
@@ -218,11 +157,6 @@ function createPlanFromForm() {
 
 }
 
-
-/* ============================================================
-   SAVE CURRENT PLAN
-============================================================ */
-
 function saveCurrentPlan(
     showMessage = true
 ) {
@@ -230,15 +164,12 @@ function saveCurrentPlan(
     const existingPlan =
         loadCurrentPlan();
 
-
     const newPlan =
         createPlanFromForm();
-
 
     if (!newPlan) {
         return null;
     }
-
 
     if (existingPlan) {
 
@@ -246,7 +177,6 @@ function saveCurrentPlan(
             existingPlan.id;
 
     }
-
 
     if (
         existingPlan &&
@@ -258,16 +188,13 @@ function saveCurrentPlan(
 
     }
 
-
     saveCurrentPlanData(
         newPlan
     );
 
-
     updatePlannerStatus(
         newPlan.status
     );
-
 
     if (showMessage) {
 
@@ -278,50 +205,38 @@ function saveCurrentPlan(
 
     }
 
-
     return newPlan;
 
 }
-
-
-/* ============================================================
-   RESTORE SAVED PLAN
-============================================================ */
 
 function restorePlanIntoForm() {
 
     const plan =
         loadCurrentPlan();
 
-
     if (!plan) {
         return;
     }
-
 
     const activitySelect =
         document.getElementById(
             "planner-activity"
         );
 
-
     const dateInput =
         document.getElementById(
             "planner-date"
         );
-
 
     const learnersInput =
         document.getElementById(
             "planner-learners"
         );
 
-
     const notesInput =
         document.getElementById(
             "planner-notes"
         );
-
 
     if (activitySelect) {
 
@@ -330,14 +245,12 @@ function restorePlanIntoForm() {
 
     }
 
-
     if (dateInput) {
 
         dateInput.value =
             plan.date;
 
     }
-
 
     if (learnersInput) {
 
@@ -346,7 +259,6 @@ function restorePlanIntoForm() {
 
     }
 
-
     if (notesInput) {
 
         notesInput.value =
@@ -354,70 +266,35 @@ function restorePlanIntoForm() {
 
     }
 
-
     updatePlannerStatus(
         plan.status
     );
 
 }
 
+function updatePlannerStatus(status) {
+    const statusLabel = document.getElementById("planner-status");
+    const statusBadge = document.getElementById("planner-status"); // Fallback
 
-/* ============================================================
-   UPDATE PLANNER STATUS
-============================================================ */
+    if (!statusLabel && !statusBadge) return;
 
-function updatePlannerStatus(
-    status
-) {
-
-    const statusLabel =
-        document.getElementById(
-            "planner-status"
-        );
-
-
-    if (!statusLabel) {
-        return;
-    }
-
-
-    statusLabel.className =
-        `plan-status ${status.toLowerCase()}`;
-
+    const el = statusLabel || statusBadge;
+    el.className = `status-badge ${status.toLowerCase()}`;
 
     const labels = {
-
-        SYNCED:
-            "✓ Synced",
-
-        PENDING:
-            "◷ Pending sync",
-
-        FAILED:
-            "! Sync failed",
-
-        CONFLICT:
-            "! Conflict"
-
+        SYNCED: "✓ Synced",
+        PENDING: "◷ Pending sync",
+        FAILED: "! Sync failed",
+        CONFLICT: "! Conflict"
     };
 
-
-    statusLabel.textContent =
-        labels[status] ||
-        "Not saved";
-
+    el.textContent = labels[status] || "No plan";
 }
-
-
-/* ============================================================
-   SYNC PLAN
-============================================================ */
 
 function syncPlan() {
 
     const plan =
         loadCurrentPlan();
-
 
     if (!plan) {
 
@@ -429,7 +306,6 @@ function syncPlan() {
         return;
 
     }
-
 
     if (!navigator.onLine) {
 
@@ -457,11 +333,9 @@ function syncPlan() {
 
     }
 
-
     isOnline = true;
 
     updateConnectionUI();
-
 
     plan.status =
         "PENDING";
@@ -474,12 +348,10 @@ function syncPlan() {
         "PENDING"
     );
 
-
     showPlanMessage(
         "Connection available. Synchronizing plan...",
         "success"
     );
-
 
     setTimeout(
         () => {
@@ -510,23 +382,19 @@ function syncPlan() {
 
             }
 
-
             plan.status =
                 "SYNCED";
 
             plan.updatedAt =
                 new Date().toISOString();
 
-
             saveCurrentPlanData(
                 plan
             );
 
-
             updatePlannerStatus(
                 "SYNCED"
             );
-
 
             showPlanMessage(
                 "Plan synchronized successfully.",
@@ -538,11 +406,6 @@ function syncPlan() {
     );
 
 }
-
-
-/* ============================================================
-   PLANNER FEEDBACK
-============================================================ */
 
 function showPlanMessage(
     message,
@@ -556,11 +419,6 @@ function showPlanMessage(
 
 }
 
-
-/* ============================================================
-   CONNECTION STATUS
-============================================================ */
-
 function updateConnectionUI() {
 
     const status =
@@ -568,17 +426,14 @@ function updateConnectionUI() {
             "connection-status"
         );
 
-
     const label =
         document.getElementById(
             "connection-label"
         );
 
-
     if (!status || !label) {
         return;
     }
-
 
     if (isOnline) {
 
@@ -610,11 +465,6 @@ function updateConnectionUI() {
 
 }
 
-
-/* ============================================================
-   REAL NETWORK DETECTION
-============================================================ */
-
 window.addEventListener(
     "online",
     () => {
@@ -631,7 +481,6 @@ window.addEventListener(
         const plan =
             loadCurrentPlan();
 
-
         if (
             plan &&
             plan.status === "PENDING"
@@ -645,7 +494,6 @@ window.addEventListener(
 
     }
 );
-
 
 window.addEventListener(
     "offline",
@@ -663,12 +511,12 @@ window.addEventListener(
     }
 );
 
-
-/* ============================================================
-   INITIAL NETWORK STATE
-============================================================ */
-
 isOnline =
     navigator.onLine;
 
 updateConnectionUI();
+
+document.addEventListener("DOMContentLoaded", () => {
+    initialisePlanner();
+    restorePlanIntoForm();
+});

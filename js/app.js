@@ -1,23 +1,3 @@
-/* ============================================================
-   STEMMATE APPLICATION CONTROLLER
-
-   This file connects:
-
-   - Navigation
-   - Activities
-   - My Activities
-   - Create Activity
-   - Saved Activities
-   - Activity Details
-   - Planner
-   - Accessibility interactions
-============================================================ */
-
-
-/* ============================================================
-   APPLICATION STARTUP
-============================================================ */
-
 document.addEventListener(
     "DOMContentLoaded",
     () => {
@@ -31,8 +11,6 @@ document.addEventListener(
         initialiseMyActivities();
 
         initialiseSavedActivities();
-
-        initialisePlanner();
 
         initialiseConnectionControls();
 
@@ -50,11 +28,6 @@ document.addEventListener(
 
     }
 );
-
-
-/* ============================================================
-   NAVIGATION
-============================================================ */
 
 function initialiseNavigation() {
 
@@ -81,7 +54,6 @@ function initialiseNavigation() {
 
 }
 
-
 function navigateTo(screenName) {
 
     const screens =
@@ -94,14 +66,12 @@ function navigateTo(screenName) {
             ".nav-btn"
         );
 
-
     screens.forEach(screen => {
 
         screen.hidden =
             screen.dataset.screenPanel !== screenName;
 
     });
-
 
     navigationButtons.forEach(button => {
 
@@ -112,17 +82,12 @@ function navigateTo(screenName) {
 
     });
 
-
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
 
-
-    /*
-        Some screens need to refresh their content
-        every time the user opens them.
-    */
+    
 
     if (
         screenName ===
@@ -133,7 +98,6 @@ function navigateTo(screenName) {
 
     }
 
-
     if (
         screenName ===
         "saved"
@@ -142,7 +106,6 @@ function navigateTo(screenName) {
         renderSavedActivities();
 
     }
-
 
     if (
         screenName ===
@@ -155,17 +118,11 @@ function navigateTo(screenName) {
 
 }
 
-
-/* ============================================================
-   ACTIVITY INITIALISATION
-============================================================ */
-
 function initialiseActivities() {
 
     populateSubjectFilter();
 
     populateGradeFilter();
-
 
     const search =
         document.getElementById(
@@ -181,7 +138,6 @@ function initialiseActivities() {
         document.getElementById(
             "grade-filter"
         );
-
 
     search.addEventListener(
         "input",
@@ -200,18 +156,12 @@ function initialiseActivities() {
 
 }
 
-
-/* ============================================================
-   SUBJECT FILTER
-============================================================ */
-
 function populateSubjectFilter() {
 
     const select =
         document.getElementById(
             "subject-filter"
         );
-
 
     getSubjects().forEach(subject => {
 
@@ -234,18 +184,12 @@ function populateSubjectFilter() {
 
 }
 
-
-/* ============================================================
-   GRADE FILTER
-============================================================ */
-
 function populateGradeFilter() {
 
     const select =
         document.getElementById(
             "grade-filter"
         );
-
 
     getGrades().forEach(grade => {
 
@@ -268,11 +212,6 @@ function populateGradeFilter() {
 
 }
 
-
-/* ============================================================
-   RENDER FEATURED ACTIVITIES
-============================================================ */
-
 function renderFeaturedActivities() {
 
     const container =
@@ -280,9 +219,7 @@ function renderFeaturedActivities() {
             "featured-activities"
         );
 
-
     container.innerHTML = "";
-
 
     activities
         .slice(0, 3)
@@ -298,11 +235,6 @@ function renderFeaturedActivities() {
 
 }
 
-
-/* ============================================================
-   RENDER ACTIVITY SEARCH RESULTS
-============================================================ */
-
 function renderActivityResults() {
 
     const container =
@@ -310,24 +242,20 @@ function renderActivityResults() {
             "activity-results"
         );
 
-
     const search =
         document.getElementById(
             "activity-search"
         ).value;
-
 
     const subject =
         document.getElementById(
             "subject-filter"
         ).value;
 
-
     const grade =
         document.getElementById(
             "grade-filter"
         ).value;
-
 
     const results =
         searchActivities(
@@ -336,9 +264,7 @@ function renderActivityResults() {
             grade
         );
 
-
     container.innerHTML = "";
-
 
     if (results.length === 0) {
 
@@ -356,7 +282,6 @@ function renderActivityResults() {
 
     }
 
-
     results.forEach(activity => {
 
         container.appendChild(
@@ -369,11 +294,6 @@ function renderActivityResults() {
 
 }
 
-
-/* ============================================================
-   ACTIVITY CARD CREATOR
-============================================================ */
-
 function createActivityCard(
     activity
 ) {
@@ -383,10 +303,8 @@ function createActivityCard(
             "article"
         );
 
-
     card.className =
         "activity-card";
-
 
     card.innerHTML = `
 
@@ -462,15 +380,9 @@ function createActivityCard(
 
     `;
 
-
     return card;
 
 }
-
-
-/* ============================================================
-   OPEN ACTIVITY DETAILS
-============================================================ */
 
 document.addEventListener(
     "click",
@@ -481,22 +393,18 @@ document.addEventListener(
                 "[data-open-activity]"
             );
 
-
         if (!button) {
             return;
         }
-
 
         const activity =
             findAnyActivity(
                 button.dataset.openActivity
             );
 
-
         if (!activity) {
             return;
         }
-
 
         renderActivityDetail(
             activity
@@ -509,12 +417,6 @@ document.addEventListener(
     }
 );
 
-
-/* ============================================================
-   FIND ANY ACTIVITY
-   Searches both built-in and user-created activities.
-============================================================ */
-
 function findAnyActivity(
     activityId
 ) {
@@ -524,11 +426,9 @@ function findAnyActivity(
             activityId
         );
 
-
     if (builtIn) {
         return builtIn;
     }
-
 
     return loadCustomActivities()
         .find(
@@ -537,11 +437,6 @@ function findAnyActivity(
         );
 
 }
-
-
-/* ============================================================
-   ACTIVITY DETAIL
-============================================================ */
 
 function renderActivityDetail(
     activity
@@ -552,10 +447,8 @@ function renderActivityDetail(
             "activity-detail"
         );
 
-
     const isCustom =
         Boolean(activity.custom);
-
 
     container.innerHTML = `
 
@@ -571,7 +464,6 @@ function renderActivityDetail(
             >
                 ← Back
             </button>
-
 
             <div class="activity-detail-header">
 
@@ -607,7 +499,6 @@ function renderActivityDetail(
 
             </div>
 
-
             <div class="detail-section">
 
                 <h3>
@@ -622,7 +513,6 @@ function renderActivityDetail(
 
             </div>
 
-
             <div class="detail-section">
 
                 <h3>
@@ -636,7 +526,6 @@ function renderActivityDetail(
                 </p>
 
             </div>
-
 
             <div class="detail-section">
 
@@ -653,7 +542,6 @@ function renderActivityDetail(
 
             </div>
 
-
             <div class="detail-section">
 
                 <h3>
@@ -668,7 +556,6 @@ function renderActivityDetail(
                 </p>
 
             </div>
-
 
             ${
                 activity.accessibility
@@ -690,7 +577,6 @@ function renderActivityDetail(
                     : ""
             }
 
-
             <div class="form-actions">
 
                 <button
@@ -699,7 +585,6 @@ function renderActivityDetail(
                 >
                     Add to planner
                 </button>
-
 
                 <button
                     class="btn btn-secondary"
@@ -720,11 +605,6 @@ function renderActivityDetail(
 
 }
 
-
-/* ============================================================
-   SAVE ACTIVITY
-============================================================ */
-
 document.addEventListener(
     "click",
     event => {
@@ -734,21 +614,17 @@ document.addEventListener(
                 "[data-save-activity]"
             );
 
-
         if (!button) {
             return;
         }
 
-
         const activityId =
             button.dataset.saveActivity;
-
 
         const nowSaved =
             toggleSavedActivity(
                 activityId
             );
-
 
         renderActivityResults();
 
@@ -758,17 +634,12 @@ document.addEventListener(
 
         renderMyActivities();
 
-
-        /*
-            If we're currently viewing the detail page,
-            refresh that page too.
-        */
+        
 
         const activity =
             findAnyActivity(
                 activityId
             );
-
 
         if (
             activity &&
@@ -783,7 +654,6 @@ document.addEventListener(
 
         }
 
-
         showToast(
             nowSaved
                 ? "Activity saved for offline access."
@@ -796,11 +666,6 @@ document.addEventListener(
     }
 );
 
-
-/* ============================================================
-   ADD ACTIVITY TO PLANNER
-============================================================ */
-
 document.addEventListener(
     "click",
     event => {
@@ -810,25 +675,20 @@ document.addEventListener(
                 "[data-add-to-planner]"
             );
 
-
         if (!button) {
             return;
         }
 
-
         const activityId =
             button.dataset.addToPlanner;
-
 
         navigateTo(
             "planner"
         );
 
-
         populatePlannerActivities(
             activityId
         );
-
 
         showToast(
             "Activity added to your planner.",
@@ -838,11 +698,6 @@ document.addEventListener(
     }
 );
 
-
-/* ============================================================
-   CREATE ACTIVITY
-============================================================ */
-
 function initialiseCreateActivity() {
 
     const form =
@@ -850,17 +705,14 @@ function initialiseCreateActivity() {
             "create-activity-form"
         );
 
-
     form.addEventListener(
         "submit",
         event => {
 
             event.preventDefault();
 
-
             const formData =
                 new FormData(form);
-
 
             const activity = {
 
@@ -929,22 +781,17 @@ function initialiseCreateActivity() {
 
             };
 
-
             addCustomActivity(
                 activity
             );
 
-
             form.reset();
 
-
             renderMyActivities();
-
 
             navigateTo(
                 "my-activities"
             );
-
 
             showToast(
                 "Your activity was created and saved on this device.",
@@ -955,11 +802,6 @@ function initialiseCreateActivity() {
     );
 
 }
-
-
-/* ============================================================
-   CUSTOM ACTIVITY ID
-============================================================ */
 
 function generateCustomActivityId() {
 
@@ -974,11 +816,6 @@ function generateCustomActivityId() {
 
 }
 
-
-/* ============================================================
-   MY ACTIVITIES
-============================================================ */
-
 function initialiseMyActivities() {
 
     document
@@ -992,7 +829,6 @@ function initialiseMyActivities() {
             )
         );
 
-
     document
         .getElementById(
             "create-activity-from-my-library"
@@ -1004,7 +840,6 @@ function initialiseMyActivities() {
             )
         );
 
-
     document
         .getElementById(
             "create-first-activity"
@@ -1015,7 +850,6 @@ function initialiseMyActivities() {
                 "create-activity"
             )
         );
-
 
     document
         .getElementById(
@@ -1040,11 +874,6 @@ function initialiseMyActivities() {
 
 }
 
-
-/* ============================================================
-   RENDER MY ACTIVITIES
-============================================================ */
-
 function renderMyActivities() {
 
     const container =
@@ -1052,19 +881,15 @@ function renderMyActivities() {
             "my-activities-list"
         );
 
-
     const emptyState =
         document.getElementById(
             "my-activities-empty"
         );
 
-
     const customActivities =
         loadCustomActivities();
 
-
     container.innerHTML = "";
-
 
     if (
         customActivities.length === 0
@@ -1076,9 +901,7 @@ function renderMyActivities() {
 
     }
 
-
     emptyState.hidden = true;
-
 
     customActivities.forEach(
         activity => {
@@ -1088,10 +911,8 @@ function renderMyActivities() {
                     "article"
                 );
 
-
             card.className =
                 "activity-card";
-
 
             card.innerHTML = `
 
@@ -1149,7 +970,6 @@ function renderMyActivities() {
 
                 </div>
 
-
                 <div class="activity-actions">
 
                     <button
@@ -1162,16 +982,18 @@ function renderMyActivities() {
                     <button
                         class="delete-activity-btn"
                         data-delete-activity="${activity.id}"
-                        aria-label="Delete ${escapeHtml(activity.title)}"
-                        title="Delete activity"
+                        aria-label="Remove ${escapeHtml(activity.title)} from My Activities"
+                        title="Remove from My Activities"
                     >
-                        ×
+                        <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                            <path d="M3 6h18M8 6V4h8v2m-11 0 1 14h12l1-14M10 10v6m4-6v6"/>
+                        </svg>
+                        <span>Remove</span>
                     </button>
 
                 </div>
 
             `;
-
 
             container.appendChild(
                 card
@@ -1182,11 +1004,6 @@ function renderMyActivities() {
 
 }
 
-
-/* ============================================================
-   DELETE CUSTOM ACTIVITY
-============================================================ */
-
 document.addEventListener(
     "click",
     event => {
@@ -1196,45 +1013,36 @@ document.addEventListener(
                 "[data-delete-activity]"
             );
 
-
         if (!button) {
             return;
         }
 
-
         const activityId =
             button.dataset.deleteActivity;
-
 
         const activity =
             findAnyActivity(
                 activityId
             );
 
-
         if (!activity) {
             return;
         }
-
 
         const confirmed =
             confirm(
                 `Delete "${activity.title}"?`
             );
 
-
         if (!confirmed) {
             return;
         }
-
 
         deleteCustomActivity(
             activityId
         );
 
-
         renderMyActivities();
-
 
         showToast(
             "Activity deleted.",
@@ -1244,15 +1052,8 @@ document.addEventListener(
     }
 );
 
-
-/* ============================================================
-   SAVED ACTIVITIES
-============================================================ */
-
 function initialiseSavedActivities() {
-    // Saved activities are rendered dynamically.
 }
-
 
 function renderSavedActivities() {
 
@@ -1261,16 +1062,13 @@ function renderSavedActivities() {
             "saved-activities"
         );
 
-
     const emptyState =
         document.getElementById(
             "saved-empty"
         );
 
-
     const savedIds =
         loadSavedActivities();
-
 
     const savedActivities =
         savedIds
@@ -1280,9 +1078,7 @@ function renderSavedActivities() {
             )
             .filter(Boolean);
 
-
     container.innerHTML = "";
-
 
     if (
         savedActivities.length === 0
@@ -1294,9 +1090,7 @@ function renderSavedActivities() {
 
     }
 
-
     emptyState.hidden = true;
-
 
     savedActivities.forEach(
         activity => {
@@ -1313,62 +1107,6 @@ function renderSavedActivities() {
 }
 
 
-/* ============================================================
-   PLANNER INITIALISATION
-============================================================ */
-
-function initialisePlanner() {
-
-    document
-        .getElementById(
-            "save-draft"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                saveCurrentPlan(
-                    true
-                );
-
-            }
-        );
-
-
-    document
-        .getElementById(
-            "save-and-sync"
-        )
-        .addEventListener(
-            "click",
-            () => {
-
-                const plan =
-                    saveCurrentPlan(
-                        false
-                    );
-
-
-                if (!plan) {
-                    return;
-                }
-
-
-                syncPlan();
-
-            }
-        );
-
-
-    populatePlannerActivities();
-
-}
-
-
-/* ============================================================
-   POPULATE PLANNER ACTIVITIES
-============================================================ */
-
 function populatePlannerActivities(
     selectedId = ""
 ) {
@@ -1378,20 +1116,16 @@ function populatePlannerActivities(
             "planner-activity"
         );
 
-
     if (!select) {
         return;
     }
 
-
     const allActivities =
         getAllActivities();
-
 
     const currentValue =
         selectedId ||
         select.value;
-
 
     select.innerHTML = `
 
@@ -1401,7 +1135,6 @@ function populatePlannerActivities(
 
     `;
 
-
     allActivities.forEach(
         activity => {
 
@@ -1410,16 +1143,13 @@ function populatePlannerActivities(
                     "option"
                 );
 
-
             option.value =
                 activity.id;
-
 
             option.textContent =
                 activity.custom
                     ? `✦ ${activity.title} — ${activity.subject}`
                     : `${activity.title} — ${activity.subject}`;
-
 
             select.appendChild(
                 option
@@ -1427,7 +1157,6 @@ function populatePlannerActivities(
 
         }
     );
-
 
     if (currentValue) {
 
@@ -1438,18 +1167,12 @@ function populatePlannerActivities(
 
 }
 
-
-/* ============================================================
-   CONNECTION STATUS
-============================================================ */
-
 function initialiseConnectionControls() {
 
     isOnline =
         navigator.onLine;
 
     updateConnectionUI();
-
 
     window.addEventListener(
         "online",
@@ -1466,7 +1189,6 @@ function initialiseConnectionControls() {
 
         }
     );
-
 
     window.addEventListener(
         "offline",
@@ -1486,13 +1208,7 @@ function initialiseConnectionControls() {
 
 }
 
-
-/* ============================================================
-   TOAST
-============================================================ */
-
 let toastTimer = null;
-
 
 function showToast(
     message,
@@ -1504,22 +1220,17 @@ function showToast(
             "toast"
         );
 
-
     toast.textContent =
         message;
-
 
     toast.className =
         `toast ${type}`;
 
-
     toast.hidden = false;
-
 
     clearTimeout(
         toastTimer
     );
-
 
     toastTimer =
         setTimeout(
@@ -1533,11 +1244,6 @@ function showToast(
         );
 
 }
-
-
-/* ============================================================
-   SAFE HTML OUTPUT
-============================================================ */
 
 function escapeHtml(
     value
@@ -1567,12 +1273,6 @@ function escapeHtml(
 
 }
 
-
-/* ============================================================
-   KEYBOARD SHORTCUT
-   "/" focuses the activity search field.
-============================================================ */
-
 document.addEventListener(
     "keydown",
     event => {
@@ -1586,12 +1286,10 @@ document.addEventListener(
 
             event.preventDefault();
 
-
             const search =
                 document.getElementById(
                     "activity-search"
                 );
-
 
             if (search) {
 

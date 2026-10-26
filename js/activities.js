@@ -1,13 +1,3 @@
-/* ============================================================
-   STEMMATE ACTIVITIES
-   Built-in / ready-to-use STEM activities
-============================================================ */
-
-
-/* ============================================================
-   BUILT-IN ACTIVITY DATA
-============================================================ */
-
 const activities = [
 
     {
@@ -39,7 +29,6 @@ const activities = [
 
     },
 
-
     {
         id: "solar-oven",
 
@@ -68,7 +57,6 @@ const activities = [
             "Do not look directly at strong reflected sunlight. Handle warm materials carefully."
 
     },
-
 
     {
         id: "plant-water",
@@ -99,7 +87,6 @@ const activities = [
 
     },
 
-
     {
         id: "ecosystem-survey",
 
@@ -128,7 +115,6 @@ const activities = [
             "Stay within the designated area and avoid touching unknown plants or animals."
 
     },
-
 
     {
         id: "safe-acids",
@@ -161,11 +147,6 @@ const activities = [
 
 ];
 
-
-/* ============================================================
-   ACTIVITY LOOKUP
-============================================================ */
-
 function getActivityById(id) {
 
     return activities.find(
@@ -173,11 +154,6 @@ function getActivityById(id) {
     );
 
 }
-
-
-/* ============================================================
-   GET SUBJECT LIST
-============================================================ */
 
 function getSubjects() {
 
@@ -190,11 +166,6 @@ function getSubjects() {
     ].sort();
 
 }
-
-
-/* ============================================================
-   GET GRADE LIST
-============================================================ */
 
 function getGrades() {
 
@@ -211,11 +182,6 @@ function getGrades() {
     );
 
 }
-
-
-/* ============================================================
-   SEARCH BUILT-IN ACTIVITIES
-============================================================ */
 
 function searchActivities(
     searchTerm = "",
