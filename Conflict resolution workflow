@@ -1,0 +1,25 @@
+# Conflict Resolution Workflow
+
+## Purpose
+Provide facilitators with clear recovery guidance when synchronization conflicts occur.  
+This workflow was added after evaluation feedback showed that "Conflict Detected" alone was too vague.
+
+## Steps
+
+1. Retry Sync
+   - Attempt synchronization again to resolve temporary connection issues.
+   - System displays progress and confirms success or failure.
+
+2. Check Offline Records
+   - Review locally stored data to ensure attendance counts are correct.
+   - Confirm that no personal identifiers are present (FR-08 compliance).
+
+3. Escalate to Team Support
+   - If conflict persists, notify the team representative.
+   - Provide conflict details (timestamp, record ID, state) for resolution.
+
+## Traceability
+- Requirement: FR-08 (Privacy – numeric-only attendance)
+- Prototype Element: Conflict Detected state in SyncQueue
+- Evaluation Finding: Testers requested clearer recovery guidance
+- Improvement: Structured conflict resolution workflow documented here
